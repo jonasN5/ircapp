@@ -1,0 +1,651 @@
+/* ########################################################## */
+/* ###  SEARCH PAGE & GLOBAL SETTINGS ↓                   ### */
+/* ########################################################## */
+
+body,html {
+  background-color: #F7F7F7;
+  font: caption;
+}
+
+body {
+  background-image: url(/static/ic_ircapp_logo_lightgray.svg);
+  background-position: 50% calc(50% + 32px);
+  background-repeat: no-repeat;
+}
+
+a {
+  color: #03a9f4;
+}
+
+#settings {
+  background: #FFF none repeat scroll 0% 0%;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.24);
+  margin-top: 10px;
+  padding-bottom: 16px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: absolute;
+  transition: transform 0.2s ease 0s, visibility 0.2s ease 0s;
+  transform: translateY(0px);
+  width: 100%;
+  z-index: -1;
+  width: inherit;
+}
+
+#settings-content {
+  font-size: 14px;
+  float: right;
+  width: calc(100% - 72px);
+  margin-top: 16px;
+}
+
+#delete_pic {
+  opacity: 0.4;
+}
+
+#delete_pic:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+#searchbox {
+  padding-left: 40px;
+  padding-right: 8px;
+}
+
+.searchbox {
+  background-image: url(/static/ic_search_gray.svg);
+  background-repeat: no-repeat;
+  background-position: 24px center;
+  border-radius:2px;
+  height: 36px;
+  border: 0px none;
+  outline: 0px none;
+  padding-right: 8px;
+  padding-left: 72px;
+  width: 300px;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ########################################################## */
+/* ###  RESULTS PAGE ↓                                    ### */
+/* ########################################################## */
+
+#results_div {
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-bottom: 16px;
+  margin-top: 80px;
+}
+
+#nextpage, #prevpage, #firstpage {
+  cursor: hand;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#nextpage:hover, #prevpage:hover, #firstpage:hover {
+  cursor: pointer;
+  cursor: hand;
+}
+
+#nextpage:active, #prevpage:active, #firstpage:active {
+  color: #455a64;
+}
+
+#query tr td:nth-child(3), #query tr th:nth-child(3), #query tr td:nth-child(4), #query tr th:nth-child(4){ display: none; }
+#query tr td:nth-child(5), #query tr th:nth-child(5), #query tr td:nth-child(6), #query tr th:nth-child(6){ display: none; }
+#query tr td:nth-child(7), #query tr th:nth-child(7){ display: none; }
+#query tr td:nth-child(8){ border: none; }
+
+#query tr {
+  vertical-align: middle;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+#query tr td:first-of-type {
+  text-align: left;
+  max-width: 800px;
+  white-space: normal;
+}
+
+#query tr:hover {
+  background-color: #03a9f4;
+  color: #fff;
+  cursor: hand;
+  cursor: pointer;
+}
+
+#query tr:active {
+  background-color: #fff;
+}
+
+/* ########################################################## */
+/* ###  DOWNLOAD BOX ↓                                    ### */
+/* ########################################################## */
+
+#folder_div {
+  background-color: #e9eef1;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 13px;
+  line-height: 18px;
+  overflow: hidden;
+  padding: 16px;
+}
+
+#free_sp {
+  float: right;
+}
+
+#down table {
+  width: 100%;
+}
+
+#down table tr td:first-of-type {
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+}
+
+#down table tr td:nth-child(2) {
+  padding-right: 8px;
+  text-align: right;
+  width: 80px;
+}
+
+#down table tr td:nth-child(3) {
+  padding-right: 8px;
+  width: 260px;
+}
+
+#down table tr td:nth-child(4) {
+  text-align: right;
+  width: 20px;
+}
+
+#queue, #history {
+  max-height: 173px;
+  overflow-y: auto;
+}
+
+#download_ongoing {
+  color: #212121;
+}
+
+#download_ongoing table tr:nth-child(2) td:first-of-type:hover{
+  cursor: initial;
+  color: #212121;
+}
+
+#download_ongoing table tr td:first-of-type:hover, #history table tr td:first-of-type:hover {
+  cursor: pointer;
+  cursor: hand;
+  color: #03A9F4;
+}
+
+#download_ongoing table tr td:first-of-type:active, #history table tr td:first-of-type:active {
+  color: #212121;
+}
+
+.ic-history {
+  background: url(/static/ic_history_blue.svg) no-repeat center left 16px;
+}
+
+#progressbox {
+  background-color: #abe4fd;
+  border-radius: 0px;
+  border: none;
+  color: #fff;
+  display: none;
+  position: relative;
+  text-align: center;
+  width: 50%;
+}
+
+#progressbar {
+  height: 18px;
+  background-color: #03a9f4;
+  width: 0%;
+}
+
+/* ########################################################## */
+/* ###  ABOUT ↓                                           ### */
+/* ########################################################## */
+
+#about-version {
+  position: absolute;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+/* ########################################################## */
+/* ###  SEARCH PREFERENCES ↓                              ### */
+/* ########################################################## */
+
+#preferences_div {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+#contains_div, #excludes_div {
+  float: left;
+}
+
+.search-chip {
+  border-radius: 12px;
+  border: 1px solid #03a9f4;
+  cursor: default;
+  display: inline-block;
+  float: left;
+  font: 13px/18px;
+  margin-right: 3px;
+  max-width: 200px;
+  overflow: hidden;
+  padding: 0px 8px 0px 3px;
+  position: relative;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#downbox_options {
+  float: right;
+  padding-top: 8px;
+  padding-right: 8px;
+}
+
+/* ########################################################## */
+/* ###  MATERIAL DESIGN LITE TWEAKS ↓                     ### */
+/* ########################################################## */
+
+.mdl-card {
+  box-shadow:0 17px 17px rgba(0,0,0,.15),0 27px 55px rgba(0,0,0,.3);
+}
+
+.mdl-card__menu-bottom {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  margin-right: 32px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mdl-button {
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.mdl-card__title {
+  background-color: #03a9f4;
+}
+
+.mdl-card__title-text {
+  color: #fff;
+}
+
+.mdl-card__supporting-text {
+  width: calc(100% - 32px);
+}
+
+.mdl-layout__content {
+  margin: 32px;
+}
+
+.ircapp-logo, .about-button {
+  opacity: 0.7;
+  transition-property: background-color, opacity;
+  transition-duration: 0.2s, 0.2s;
+  transition-timing-function: ease, ease;
+  transition-delay: 0s, 0s;
+}
+
+.ircapp-logo:hover, .about-button:hover {
+  opacity: 1;
+}
+
+.ircapp-logo:active {
+  opacity: 0.8;
+}
+
+.quick-download-button {
+  min-width: 36px;
+  width: 36px;
+  padding: 0px;
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+.download-box-button {
+  color: #fff;
+}
+
+.mdl-data-table td:first-of-type {
+  padding-left: 18px;
+}
+
+.mdl-data-table td {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  vertical-align: middle;
+}
+
+.mdl-layout__header-row {
+  padding-left: 40px;
+}
+
+.mdl-layout__header {
+  background-color: #455a64;
+}
+
+.opacity-on-hover {
+  opacity: 1;
+}
+
+.opacity-on-hover:hover {
+  opacity: 0.7;
+}
+
+.opacity-on-hover:active {
+  opacity: 1;
+}
+
+.mdl-checkbox__label {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 13px;
+  line-height: inherit;
+}
+
+
+/* ########################################################## */
+/* ###  TOOLTIPSTER ↓                                     ### */
+/* ########################################################## */
+
+/* This is the default Tooltipster theme (feel free to modify or duplicate and create multiple themes!): */
+.tooltipster-default {
+  border-radius: 5px;
+  border: 2px solid #000;
+  background: #4c4c4c;
+  color: #fff;
+}
+
+/* Use this next selector to style things like font-size and line-height: */
+.tooltipster-default .tooltipster-content {
+  font-family: caption;
+  font-size: 14px;
+  line-height: 16px;
+  padding: 8px 10px;
+  overflow: hidden;
+}
+
+/* This next selector defines the color of the border on the outside of the arrow. This will automatically match the color and size of the border set on the main tooltip styles. Set display: none; if you would like a border around the tooltip but no border around the arrow */
+.tooltipster-default .tooltipster-arrow .tooltipster-arrow-border {
+  /* border-color: ... !important; */
+}
+
+/* If you're using the icon option, use this next selector to style them */
+.tooltipster-icon {
+  cursor: help;
+  margin-left: 4px;
+}
+
+/* This is the base styling required to make all Tooltipsters work */
+.tooltipster-base {
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9999999;
+  pointer-events: none;
+  width: auto;
+  overflow: visible;
+}
+.tooltipster-base .tooltipster-content {
+  overflow: hidden;
+}
+
+/* These next classes handle the styles for the little arrow attached to the tooltip. By default, the arrow will inherit the same colors and border as what is set on the main tooltip itself. */
+.tooltipster-arrow {
+  display: block;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+.tooltipster-arrow span, .tooltipster-arrow-border {
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.tooltipster-arrow-top span, .tooltipster-arrow-top-right span, .tooltipster-arrow-top-left span {
+  border-left: 8px solid transparent !important;
+  border-right: 8px solid transparent !important;
+  border-top: 8px solid;
+  bottom: -7px;
+}
+.tooltipster-arrow-top .tooltipster-arrow-border, .tooltipster-arrow-top-right .tooltipster-arrow-border, .tooltipster-arrow-top-left .tooltipster-arrow-border {
+  border-left: 9px solid transparent !important;
+  border-right: 9px solid transparent !important;
+  border-top: 9px solid;
+  bottom: -7px;
+}
+
+.tooltipster-arrow-bottom span, .tooltipster-arrow-bottom-right span, .tooltipster-arrow-bottom-left span {
+  border-left: 8px solid transparent !important;
+  border-right: 8px solid transparent !important;
+  border-bottom: 8px solid;
+  top: -7px;
+}
+.tooltipster-arrow-bottom .tooltipster-arrow-border, .tooltipster-arrow-bottom-right .tooltipster-arrow-border, .tooltipster-arrow-bottom-left .tooltipster-arrow-border {
+  border-left: 9px solid transparent !important;
+  border-right: 9px solid transparent !important;
+  border-bottom: 9px solid;
+  top: -7px;
+}
+.tooltipster-arrow-top span, .tooltipster-arrow-top .tooltipster-arrow-border, .tooltipster-arrow-bottom span, .tooltipster-arrow-bottom .tooltipster-arrow-border {
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.tooltipster-arrow-top-left span, .tooltipster-arrow-bottom-left span {
+  left: 6px;
+}
+.tooltipster-arrow-top-left .tooltipster-arrow-border, .tooltipster-arrow-bottom-left .tooltipster-arrow-border {
+  left: 5px;
+}
+.tooltipster-arrow-top-right span,  .tooltipster-arrow-bottom-right span {
+  right: 6px;
+}
+.tooltipster-arrow-top-right .tooltipster-arrow-border, .tooltipster-arrow-bottom-right .tooltipster-arrow-border {
+  right: 5px;
+}
+.tooltipster-arrow-left span, .tooltipster-arrow-left .tooltipster-arrow-border {
+  border-top: 8px solid transparent !important;
+  border-bottom: 8px solid transparent !important;
+  border-left: 8px solid;
+  top: 50%;
+  margin-top: -7px;
+  right: -7px;
+}
+.tooltipster-arrow-left .tooltipster-arrow-border {
+  border-top: 9px solid transparent !important;
+  border-bottom: 9px solid transparent !important;
+  border-left: 9px solid;
+  margin-top: -8px;
+}
+.tooltipster-arrow-right span, .tooltipster-arrow-right .tooltipster-arrow-border {
+  border-top: 8px solid transparent !important;
+  border-bottom: 8px solid transparent !important;
+  border-right: 8px solid;
+  top: 50%;
+  margin-top: -7px;
+  left: -7px;
+}
+.tooltipster-arrow-right .tooltipster-arrow-border {
+  border-top: 9px solid transparent !important;
+  border-bottom: 9px solid transparent !important;
+  border-right: 9px solid;
+  margin-top: -8px;
+}
+
+/* Some CSS magic for the awesome animations - feel free to make your own custom animations and reference it in your Tooltipster settings! */
+
+.tooltipster-fade {
+  opacity: 0;
+  -webkit-transition-property: opacity;
+  -moz-transition-property: opacity;
+  -o-transition-property: opacity;
+  -ms-transition-property: opacity;
+  transition-property: opacity;
+}
+.tooltipster-fade-show {
+  opacity: 1;
+}
+
+.tooltipster-grow {
+  -webkit-transform: scale(0,0);
+  -moz-transform: scale(0,0);
+  -o-transform: scale(0,0);
+  -ms-transform: scale(0,0);
+  transform: scale(0,0);
+  -webkit-transition-property: -webkit-transform;
+  -moz-transition-property: -moz-transform;
+  -o-transition-property: -o-transform;
+  -ms-transition-property: -ms-transform;
+  transition-property: transform;
+  -webkit-backface-visibility: hidden;
+}
+.tooltipster-grow-show {
+  -webkit-transform: scale(1,1);
+  -moz-transform: scale(1,1);
+  -o-transform: scale(1,1);
+  -ms-transform: scale(1,1);
+  transform: scale(1,1);
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+}
+
+.tooltipster-swing {
+  opacity: 0;
+  -webkit-transform: rotateZ(4deg);
+  -moz-transform: rotateZ(4deg);
+  -o-transform: rotateZ(4deg);
+  -ms-transform: rotateZ(4deg);
+  transform: rotateZ(4deg);
+  -webkit-transition-property: -webkit-transform, opacity;
+  -moz-transition-property: -moz-transform;
+  -o-transition-property: -o-transform;
+  -ms-transition-property: -ms-transform;
+  transition-property: transform;
+}
+.tooltipster-swing-show {
+  opacity: 1;
+  -webkit-transform: rotateZ(0deg);
+  -moz-transform: rotateZ(0deg);
+  -o-transform: rotateZ(0deg);
+  -ms-transform: rotateZ(0deg);
+  transform: rotateZ(0deg);
+  -webkit-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
+  -moz-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
+  -ms-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
+  -o-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
+  transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
+}
+
+.tooltipster-fall {
+  top: 0;
+  -webkit-transition-property: top;
+  -moz-transition-property: top;
+  -o-transition-property: top;
+  -ms-transition-property: top;
+  transition-property: top;
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+}
+.tooltipster-fall-show {
+}
+.tooltipster-fall.tooltipster-dying {
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  -ms-transition-property: all;
+  transition-property: all;
+  top: 0px !important;
+  opacity: 0;
+}
+
+.tooltipster-slide {
+  left: -40px;
+  -webkit-transition-property: left;
+  -moz-transition-property: left;
+  -o-transition-property: left;
+  -ms-transition-property: left;
+  transition-property: left;
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+  -webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  -o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+  transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+}
+.tooltipster-slide.tooltipster-slide-show {
+}
+.tooltipster-slide.tooltipster-dying {
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  -ms-transition-property: all;
+  transition-property: all;
+  left: 0px !important;
+  opacity: 0;
+}
+
+/* CSS transition for when contenting is changing in a tooltip that is still open. The only properties that will NOT transition are: width, height, top, and left */
+.tooltipster-content-changing {
+  opacity: 0.5;
+  -webkit-transform: scale(1.1, 1.1);
+  -moz-transform: scale(1.1, 1.1);
+  -o-transform: scale(1.1, 1.1);
+  -ms-transform: scale(1.1, 1.1);
+  transform: scale(1.1, 1.1);
+}
+.tooltipster-shadow {
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0px 0px 14px rgba(0,0,0,0.3);
+  color: #2c2c2c;
+}
+.tooltipster-shadow .tooltipster-content {
+  font: caption;
+  font-size: 14px;
+  line-height: 16px;
+  padding: 8px 10px;
+}
