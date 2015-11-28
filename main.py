@@ -10,13 +10,7 @@ import cherrypy
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
 
-try:
-    par_dir = os.path.abspath(os.path.dirname(__file__))
-except:
-    par_dir = os.path.dirname(sys.executable)
 
-sys.path.append(par_dir)
-sys.path.append(os.path.join(par_dir, 'ircapp'))
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
@@ -25,7 +19,7 @@ class DjangoApplication(object):
     HOST = "127.0.0.1"
     PORT = 8020
 
-    with open(os.path.join(par_dir, "config.ini"), "r") as cfg:    
+    with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:    
         content = cfg.readlines()
         HOST = content[0][12:-1].strip(" ")
         PORT = int(content[1][6:-1].strip(" "))   
@@ -61,12 +55,11 @@ class DjangoApplication(object):
             'log.screen': True
         })
         self.mount_static(settings.STATIC_URL, settings.STATIC_ROOT)
-
-        
+        #cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.join(settings.BASE_DIR, 'IRCapp.pid')).subscribe()
         cherrypy.log("Loading and serving Django application")
         cherrypy.tree.graft(WSGIHandler())
         cherrypy.engine.start()
-
+        
         t = threading.Thread(target=self.open_browser())
         t.deamon = True
         t.start()        
@@ -76,7 +69,7 @@ class DjangoApplication(object):
 if __name__ == '__main__':
             
     from ircapp.models import *
-    from ircapp.download import xdcc
+    from ircapp.download import *
     from ircapp.forms import *
     from ircapp.logs import *
     application = get_wsgi_application()    

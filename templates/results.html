@@ -109,7 +109,7 @@
                             data : { data : info[0] + ',' + info[1] + ',' + info[2] + ',' +  info[3] + ',' + info[4], filename : q },
                             success: function( response ) {
                                 if ( response.fields ) {
-                                    //download is not lauchned because download is in progress;item is added to the queue
+                                    //download is not launched because download is in progress; item is added to the queue
                                   var item = [];
 	                              var filename = response.fields.title,
 	                                size = response.fields.size,

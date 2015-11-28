@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^preferences/$', views.preferences, name='preferences'), #quick download preferences in preferences.html
     #url(r'^report_bug/$', views.report_bug, name='report_bug'), #bug report ; use mailto: and attach log.txt to provide details for further testing
     url(r'^download_settings/$', views.download_settings, name='download_settings'), #download box & shutdown option
+    url(r'^log/$', views.read_log, name='log'), #show logfile to user
     url(r'^restart_server/$', views.restart_server, name='restart_server'), #restart IRCapp (shutdown + reload)
     url(r'^shutdown_server/$', views.shutdown_server, name='shutdown_server'), #shutdown IRCapp, the Cherrypy server and free up the port
     url(r'^shutdown/$', views.shutdown, name='shutdown'), #shutdown computer on download/queue finish  

@@ -1,19 +1,22 @@
 import os, sys
 
 try:
-    par_dir = os.path.abspath(os.path.dirname(__file__))
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 except:
-    par_dir = os.path.dirname(sys.executable)
+    BASE_DIR = os.path.dirname(sys.executable)
+
+sys.path.append(BASE_DIR)
+sys.path.append(os.path.join(BASE_DIR, 'ircapp'))
 
 
 SECRET_KEY = '!8gd%24y2x#6t^npsij&+)*pc^%jyzh=np%cr5e6#78l6xdv3w'
 #keep debug true while beta testing
-DEBUG = False
+DEBUG = True
 USE_I18N = False
 USE_TZ = True
 #DATETIME_FORMAT = 'N jS, P'
 try:
-    with open(os.path.join(par_dir, "config.ini"), "r") as cfg:    
+    with open(os.path.join(BASE_DIR, "config.ini"), "r") as cfg:    
         content = cfg.readlines()
         TIME_ZONE = content[2][10:-1].strip(" ")
 except:
@@ -31,7 +34,7 @@ MIDDLEWARE_CLASSES = ()
 if sys.platform == "win32":
     my_database = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "db.sqlite3")
 else:
-    my_database = os.path.abspath(os.path.join(par_dir, 'db.sqlite3'))
+    my_database = os.path.abspath(os.path.join(BASE_DIR, 'db.sqlite3'))
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -48,7 +51,7 @@ TEMPLATES = [
 {
 'BACKEND': 'django.template.backends.django.DjangoTemplates',
 'DIRS': [
-    os.path.join(os.path.dirname(sys.executable), 'templates'),
+    os.path.join(BASE_DIR, 'templates'),
     'templates/',
     'templates',
     '/templates',
@@ -73,9 +76,9 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(par_dir,'ircapp', 'static'),
+    os.path.join(BASE_DIR,'ircapp', 'static'),
 )  
-STATIC_ROOT = os.path.join(par_dir,'ircapp', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR,'ircapp', 'static')
 
 
 

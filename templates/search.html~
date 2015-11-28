@@ -472,7 +472,7 @@ $('#down').on('click', '#delete_pic', function(events) {
   } else {
     if ( cancel != true && $("#download_ongoing td").eq(2).html() != "Canceled" ){
       cancel = true;
-      $.get( "/cancel_download/", { par : "cancel" } );
+      $.get( "/cancel_download/", { par : "cancel" );
     }
   }
 });
@@ -492,7 +492,7 @@ $('#close_download_box').click(function(event) {
   $.post( "/download_settings/", { downbox : 0 }  );
 });
 $('#shutdown_button').click(function(event) {
-    $.get( "/cancel_download/", { par : "shutdown" } );
+    $.get( "/cancel_download/", { par : "shutdown" );
     window.location.replace("/shutdown_server/?par=render");
     $.get( "/shutdown_server/", { par : "shutdown" } );
     /*
@@ -514,7 +514,7 @@ $('#shutdown_button').click(function(event) {
   });
 
 $('#restart_button').click(function(event) {
-    $.get( "/cancel_download/", { par : "restart" } );
+    $.get( "/cancel_download/", { par : "restart" );
     window.location.replace("/restart_server/?par=render");
     $.get( "/restart_server/", { par : "restart" } );
   });
@@ -740,7 +740,7 @@ function Monitor() {
 	        if ( requeued_list.indexOf(response.fields.status) > 0 ){
 	            //in this case, the item has already been requeued once, so either stay with it, or remove it if shutdown option is ON
 	            if ( $("#shutdown").is(':checked') ){
-	                $.get( "/cancel_download/", { par : "cancel" } );
+	                $.get( "/cancel_download/", { par : "cancel"} );
                 } else {
 		            if ($('#download_ongoing td').find('#queue_warning').length <= 0) {
 		              //stay in queue, but display a warning that this may take quite a while

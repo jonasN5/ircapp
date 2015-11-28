@@ -324,6 +324,13 @@ def xdcc(data, filename="", resume=False):
 
 
 
+   
+    
+    
+
+
+
+
 def splitext(path):
     for ext in ['.tar.gz', '.tar.bz2']:
         if path.endswith(ext):

@@ -123,7 +123,17 @@ def delete_pref(request):
         Quick_Download_Excludes.objects.get(pk=pk).delete()
         return HttpResponse("")
 
+def read_log(request):
+    if sys.platform == "win32":
+        os.startfile(log().my_log)
+    else:
+        opener ="open" if sys.platform == "darwin" else "xdg-open"
+        subprocess.call([opener, log().my_log])
+    return HttpResponse("")
 
+    
+    
+    
 def index(request):
     '''
     --> added to main.py, for initializing
@@ -361,7 +371,6 @@ def clear_history(request):
 
 def cancel_download(request):
     down = Download_Ongoing.objects.latest("id")
-
     try:
         #in this case, the download is canceled by the javascript, the item has to be put back at the end of the queue
         queuing = request.GET['queuing']
@@ -373,7 +382,10 @@ def cancel_download(request):
         queue = prepare(queue)
         return JsonResponse(queue, safe=False)
     except:
-        down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Canceled", None, None, None, None, None, False
+        if request.GET['par'] == "cancel":        
+            down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Canceled", None, None, None, None, None, False
+        else:
+            down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Shutdown", None, None, None, None, None, True
         down.save()
         return HttpResponse("canceled")
 
@@ -427,6 +439,13 @@ def shutdown_server(request):
     if par == "render":
         return render(request, 'shutdown.html')
     else:
+        ''' This method works fine to shutdown, but not to restart, in case the actual system is buggy
+        import signal
+        with open(os.path.join(settings.BASE_DIR, 'IRCapp.pid'), "r") as mypid:    
+            content = mypid.readlines()
+            PID = int(content[0].strip())
+        os.kill(PID, signal.SIGTERM)  
+        '''     
         cherrypy.engine.exit()
         return HttpResponse("completed")
 
@@ -441,7 +460,7 @@ def restart_server(request):
 def shutdown(request):
     if platform.system() == 'Windows':
         os.system("shutdown /s")
-        """ Shutdown Windows system, never returns
+        """ Shutdown Windows system, never returns, SABNZBD system
 
         try:
             import win32security
@@ -572,7 +591,7 @@ def quickinfo(querystring):
 
         i += 1
         data = json.loads(data.text)
-        print (data)
+
         try:
             if len(data["results"]) == 0:
                 #quick download impossible
