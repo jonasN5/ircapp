@@ -22,7 +22,7 @@ class log:
         if sys.platform == "win32":
             self.my_log = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "log.txt")
         else:
-            self.my_log = "log.txt"               
+            self.my_log = os.path.join(os.path.expanduser("~"), ".IRCapp", "log.txt")               
 
             
     def write(self):        

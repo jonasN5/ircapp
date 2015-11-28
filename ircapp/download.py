@@ -162,7 +162,7 @@ class DCCReceive(irc.client.SimpleIRCClient):
             log('Resuming download of %s' % self.filename).write()
         else:
             self.file = open(os.path.join(downloads_dir, self.filename), 'wb')
-            down.filename, down.status = self.filename, "Starting download...", self.size
+            down.filename, down.status, down.sizeraw = self.filename, "Starting download...", self.size
             log('Starting download of %s' % self.filename).write()
 
         connection = self.dcc_connect(self.ip, self.port, "raw")

@@ -77,6 +77,9 @@ if __name__ == '__main__':
     if sys.platform == "win32":
         if not os.path.isdir(os.path.join(os.environ["LOCALAPPDATA"], "IRCapp")):
             os.makedirs(os.path.join(os.environ["LOCALAPPDATA"], "IRCapp"))
+    else:
+        if not os.path.isdir(os.path.join(os.path.expanduser("~"), ".IRCapp")):
+            os.makedirs(os.path.join(os.path.expanduser("~"), ".IRCapp"))     
             
     log().clear()
     #from django.core.management import execute_from_command_line

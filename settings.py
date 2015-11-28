@@ -34,7 +34,7 @@ MIDDLEWARE_CLASSES = ()
 if sys.platform == "win32":
     my_database = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "db.sqlite3")
 else:
-    my_database = os.path.abspath(os.path.join(BASE_DIR, 'db.sqlite3'))
+    my_database = os.path.abspath(os.path.join(os.path.expanduser("~"), ".IRCapp", "db.sqlite3"))
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
