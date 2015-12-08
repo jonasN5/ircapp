@@ -27,6 +27,7 @@ import subprocess
 import cherrypy
 
 #these are the two global variables that will store History and Download_ongoing objects
+global down, hist
 down = None
 hist = None
 
@@ -158,11 +159,11 @@ class DCCReceive(irc.client.SimpleIRCClient):
 
         if resume:
             self.file = open(os.path.join(downloads_dir, self.filename), 'ab')
-            down.filename, down.status = self.filename, "Resuming download..."
+            down.filename, down.status, down.sizeraw = self.filename, "Resuming download...", self.size
             log('Resuming download of %s' % self.filename).write()
         else:
             self.file = open(os.path.join(downloads_dir, self.filename), 'wb')
-            down.filename, down.status = self.filename, "Starting download..."
+            down.filename, down.status, down.sizeraw = self.filename, "Starting download...", self.size
             log('Starting download of %s' % self.filename).write()
 
         connection = self.dcc_connect(self.ip, self.port, "raw")
@@ -293,9 +294,10 @@ def DCC_deamonthread(c, server, nickname, hist, down):
         down.save()
     
 def xdcc(data, filename="", resume=False):
+    global hist, down
     log(data).write()
     if resume:
-        global hist, down
+        #global hist, down
         down = Download_Ongoing.objects.latest("id")
         down.status, down.active ="Connecting to server...", True
         try:
@@ -305,7 +307,7 @@ def xdcc(data, filename="", resume=False):
         except:
             hist = Download_History(filename=filename)
     else:
-        global hist, down
+        #global hist, down
         Download_Ongoing.objects.all().delete()
         down = Download_Ongoing(filename=filename,status="Connecting to server...", active=True)
         hist = Download_History(filename=filename)
@@ -321,13 +323,6 @@ def xdcc(data, filename="", resume=False):
     t.daemon=True
     t.start()
     #factory = Factory(bind_address=(os.environ['OPENSHIFT_PYTHON_IP'], 0))
-
-
-
-   
-    
-    
-
 
 
 

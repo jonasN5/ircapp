@@ -27,6 +27,7 @@ import subprocess
 import cherrypy
 
 #these are the two global variables that will store History and Download_ongoing objects
+global down, hist
 down = None
 hist = None
 
@@ -94,8 +95,9 @@ class DCCReceive(irc.client.SimpleIRCClient):
     #added to request again if channel didn't load properly
     def retry_pack(self, connection):
         if self.received_bytes == 0:
-            connection.privmsg(self.bot, self.msg)
-            log("Package requested again").write()
+            if connection.connected:
+                connection.privmsg(self.bot, self.msg)
+                log("Package requested again").write()
 
     def on_welcome(self, connection, event):
         connection.join(self.channel)
@@ -293,9 +295,10 @@ def DCC_deamonthread(c, server, nickname, hist, down):
         down.save()
     
 def xdcc(data, filename="", resume=False):
+    global hist, down
     log(data).write()
     if resume:
-        global hist, down
+        #global hist, down
         down = Download_Ongoing.objects.latest("id")
         down.status, down.active ="Connecting to server...", True
         try:
@@ -305,7 +308,7 @@ def xdcc(data, filename="", resume=False):
         except:
             hist = Download_History(filename=filename)
     else:
-        global hist, down
+        #global hist, down
         Download_Ongoing.objects.all().delete()
         down = Download_Ongoing(filename=filename,status="Connecting to server...", active=True)
         hist = Download_History(filename=filename)

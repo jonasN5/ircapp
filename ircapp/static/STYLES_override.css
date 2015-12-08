@@ -152,7 +152,7 @@ a {
 }
 
 #down table tr td:first-of-type {
-  max-width: 400px;
+  max-width: 380px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -162,12 +162,12 @@ a {
 #down table tr td:nth-child(2) {
   padding-right: 8px;
   text-align: right;
-  width: 80px;
+  max-width: 100px;
 }
 
 #down table tr td:nth-child(3) {
   padding-right: 8px;
-  width: 260px;
+  width: 215px;
 }
 
 #down table tr td:nth-child(4) {
@@ -208,7 +208,6 @@ a {
   border-radius: 0px;
   border: none;
   color: #fff;
-  display: none;
   position: relative;
   text-align: center;
   width: 50%;
@@ -218,8 +217,8 @@ a {
   height: 18px;
   background-color: #03a9f4;
   width: 0%;
+  white-space: nowrap;    
 }
-
 /* ########################################################## */
 /* ###  ABOUT ↓                                           ### */
 /* ########################################################## */
@@ -368,7 +367,6 @@ a {
   font-size: 13px;
   line-height: inherit;
 }
-
 
 /* ########################################################## */
 /* ###  TOOLTIPSTER ↓                                     ### */

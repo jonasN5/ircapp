@@ -375,8 +375,7 @@ def cancel_download(request):
         if request.GET['par'] == "cancel":        
             down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Canceled", None, None, None, None, None, False
         else:
-            if not down.status=="Canceled":
-                down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Shutdown", None, None, None, None, None, True
+            down.status, down.speed, down.progress, down.completed, down.eta, down.timeleft, down.active = "Shutdown", None, None, None, None, None, True
         down.save()
         return HttpResponse("canceled")
 

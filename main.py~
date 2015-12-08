@@ -67,7 +67,8 @@ class DjangoApplication(object):
 
         cherrypy.engine.block()
 
-
+if __name__ == '__main__':
+    start_ircapp()
 
 def start_ircapp():            
 
@@ -109,5 +110,3 @@ def start_ircapp():
     
     DjangoApplication().run() 
 
-if __name__ == '__main__':
-    start_ircapp()

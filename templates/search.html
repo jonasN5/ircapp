@@ -7,9 +7,9 @@
     <title>{% block title %}IRCapp-Search{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{STATIC_URL}}favicon.ico" rel="shortcut icon" type="image/ico"></link>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
     <link rel="stylesheet" href="{{STATIC_URL}}material.min.css"></link>
     <link rel="stylesheet" href="{{STATIC_URL}}STYLES_override.css"/></link>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="{{STATIC_URL}}jquery.min.js"></script>
     <script src="{{STATIC_URL}}material.min.js"></script>
     <script src="{{STATIC_URL}}jquery.tooltipster.min.js"></script>
@@ -74,7 +74,7 @@
   <!-- </div> -->
   <div style="text-align:center;padding-top:60px" class="mdl-card__supporting-text">
     <img style="margin-right:8px;margin-bottom:8px" src="{{STATIC_URL}}ic_ircapp_logo_bluegray.svg" height="32px"><br>
-    v<strong>2015</strong>1127 (Linux) &middot; <a target="_blank" id="log">Log file</a><br><br>
+    v<strong>2015</strong>1127 (Linux) &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" id="log">Log file</a><br><br>
     <strong>Code by MrJ &middot; Art by Schickele</strong><br>
     Inspired by the search king’s dev site<br>
     &copy; 2015 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
@@ -107,6 +107,7 @@
 <div id="settings_div" style="width:500px;display:none;position:fixed;left:calc(50% - 250px);top:calc(50% - 165px)"class="demo-card-square mdl-card mdl-shadow--2dp">
   <div style="background-color:#455a64" class="mdl-card__title mdl-card--expand">
     <span class="mdl-card__title-text">Quick download preferences</span>
+	       
   </div>
   <div class="mdl-card__supporting-text">
     <div id="preferences_div">
@@ -156,18 +157,12 @@
 	{% endif %}
       </div>
     </div>
-    <!-- <div id="explanations"> -->
-    <!--     <p> -->
-    <!--     The way "Quick download" works: -->
-    <!--     <li>The algorithm will first make sure the file contains every word you indicated in the search box.</li> -->
-    <!--     <li>Then, it will do the same for the words you specify here (contains and does not contain).</li> -->
-    <!--     <li>The search will be made on a specific IRC channel, known to be reliable and fast.</li> -->
-    <!--     <li>If several results are found, the algorithm will finally choose the file matching your quality indications.</li> -->
-    <!--     <li>If no direct match regarding the quality is found, the algorithm proceeds downwards. For instance, should you set your priority to "Excellent", first an excellent quality will be looked for. If there is no match, the next lower quality is looked for (e.g. "Good"). Eventually a normal quality is chosen, if "ts" and "cam" are kept as excluded key words.</li> -->
-    <!--     </p> -->
-    <!-- </div> -->
+
   </div>
   <div class="mdl-card__menu">
+	<button id="info_button" title="Quick download algorithm" style="color:#fff;" class="mdl-button mdl-js-button mdl-button--icon">
+	    <i class="material-icons">info_outline</i> 
+	</button>  
     <button id="close_settings" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
       <i class="material-icons">close</i>
     </button>
@@ -248,10 +243,10 @@
     </span>
   </div>
   <div class="mdl-card__menu">
-    <button onclick="document.getElementById('down').style.width='calc(100% - 64px)'" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+    <button id="button_expand" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
       <i class="material-icons">chevron_left</i>
     </button>
-    <button onclick="document.getElementById('down').style.width='750px'" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+    <button id="button_collapse" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
       <i class="material-icons">chevron_right</i>
     </button>
     <button id="close_download_box" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -336,6 +331,18 @@ $('#settings_button').click(function(event) {
   }
 });
 
+var content = "The way “Quick download” works:\n" +
+    "The algorithm will first make sure the file contains every word you indicated in the search box.\n" +
+    "Then, it will do the same for the words you specify here (contains and does not contain).\n" +
+    "The search will be made on a specific IRC channel, known to be reliable and fast.\n" +
+    "If several results are found, the algorithm will finally choose the file matching your quality indications.\n" +
+    "If no direct match regarding the quality is found, the algorithm proceeds downwards.\n" +
+    "For instance, should you set your priority to “Excellent”, first an excellent quality will be looked for.\n" +
+    "If there is no match, the next lower quality is looked for (e.g. “Good”).\n" +
+    "Eventually a normal quality is chosen, if “ts” and “cam” are kept as excluded key words.";
+$("#info_button").click( function(){ alert( content ) });
+
+
 
 ///second part : ABOUT
 $('#close_about').click(function(event) {
@@ -398,7 +405,12 @@ $('#download_folder').submit(function(event) {
     }
   });
 });
-
+$('#base_folder').tooltipster({
+  content: $("<span>Double click to change</span>"),
+  animation: 'grow',
+  theme: 'tooltipster-shadow',
+});
+	
 $('#base_folder').dblclick(function(event) {
   $('#base_folder').hide();
   $('#download_folder').show();
@@ -435,7 +447,7 @@ function Getspace(update) {
       type: "get",
 
       success: function( data ) {
-	$("#harddrive").html(data.space + " GB free");
+	$("#free_sp").html(data.space + " GB free");
       },
       error: function( jqXHR, textStatus ) {
 	console.log( "space failed: " + textStatus );
@@ -495,22 +507,6 @@ $('#shutdown_button').click(function(event) {
     $.get( "/cancel_download/", { par : "shutdown" } );
     window.location.replace("/shutdown_server/?par=render");
     $.get( "/shutdown_server/", { par : "shutdown" } );
-    /*
-    $.ajax({
-      url: "/shutdown_server/",
-      type: "get",
-      data: { par : "shutdown" },
-
-      success: function( data ) {
-        if ( data === "completed" ) {
-            console.log("completed");
-            }
-      },
-      error: function( jqXHR, textStatus ) {
-	console.log( "big failed: " + textStatus );
-      }
-    });
-    */
   });
 
 $('#restart_button').click(function(event) {
@@ -536,6 +532,15 @@ $('#download_box_button').click(function(event) {
     $.post( "/download_settings/", { downbox : 1 }  );
   }
 });
+$('#button_expand').click(function(event) {
+    $('#down').css("width", "calc(100% - 64px)");
+    $('#down table').css("width", "100%");
+});
+$('#button_collapse').click(function(event) {
+    $('#down').css("width", "750px");
+    Recalibrate_table();
+});
+
 
 $( "#download" ).click(function(event) {
   event.preventDefault();
@@ -565,6 +570,9 @@ $( "#download" ).click(function(event) {
 	    "</tr>"
 	    );
 	$("#queue table").prepend(item);
+    Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html(), true );
+	$('.tooltip').tooltipster();	
+	Recalibrate_table();
 	cancel = false;
       } else {
 	if ( response.redirect ) {
@@ -581,7 +589,23 @@ $( "#clear_history" ).click(function() {
   }
 });
 
+function Recalibrate_table() {
+    var scroll_on = false;
+    $( "#down table" ).each( function(){
+        if ( $( this )[0].scrollHeight > $( this ).parent().height()+5 ){
+            scroll_on = true;
+        }
+    });
+    if ( scroll_on === true ){
+        var minWidth = Math.min.apply( null, $( "#down table" ).map( function () {
+            return $( this ).width();
+        }).get() );
+        $( "#down table" ).css("width", minWidth);
+    } else {
+        $( "#down table" ).css("width", "100%");
+    }
 
+};
 
 function Getqueue() {
   $.ajax({
@@ -611,6 +635,11 @@ function Getqueue() {
 
 	}
 	$("#queue table").append(items);
+    $("#queue table tr td:first-child").each( function(){
+        Add_tooltip( $(this), $(this).html(), true );
+    }); 
+	$('.tooltip').tooltipster();	
+	Recalibrate_table();
       }
     },
     error: function( jqXHR, textStatus ) {
@@ -619,13 +648,41 @@ function Getqueue() {
   });
 };
 
+function Add_tooltip( obj, content, test ){
+  test = typeof test !== 'undefined' ? test : false;    
+  var c = obj.clone();
+  c.css({display: 'inline', width: 'auto', visibility: 'hidden'});   
+  c.appendTo('body');
+  if ( test ){
+    if( c.width() > obj.width() ) {
+	  test = false;
+	}
+  }
+  c.remove();
+  if ( test === false ){      
+    if ( obj.hasClass('tooltipstered') ){
+	} else {
+	  obj.tooltipster({
+		content: $("<span>" + content + "</span>"),
+		animation: 'grow',
+		theme: 'tooltipster-shadow',
+	  });
+	}
+  }   
+};
+
+
 function Testnull(data, what) {
   if ( data ) {
     if ( what === "speed" ) {
       return data + " kB/s";
     } else {
-      if ( (''+data).indexOf("null") < 0 && (''+data).indexOf("undefined") < 0){
-	    return data;
+      if ( typeof data !== "undefined" ){
+	    if ( data !== null ){
+	      return data;
+		} else {
+	      return "";
+		}
       } else {
 	    return "";
       }
@@ -660,22 +717,16 @@ function Gethistory() {
 	      );
 
 	   $("#history table").append(item);
-	   $("#history table tr:last-child td:nth-child(3)").tooltipster({
-                content: $("<span>" + "Download information:<br>" + "Average speed: " + average + "<br>" + "Duration: " + duration +
-            "<br>" + "End time: " + time + "<br>" + "Attempts: " + attempts + "</span>"),
-                animation: 'grow',
-                theme: 'tooltipster-shadow',
-            });
-	   var mytr = $("#history table tr:last-child td:first-child");
-	   if ( mytr.width() >= 400 ){
-	     mytr.tooltipster({
-                content: $("<span>" + filename + "</span>"),
-                animation: 'grow',
-                theme: 'tooltipster-shadow',
-            });
-       }
+	   var content = "Download information:<br>" + "Average speed: " + average + "<br>" + "Duration: " + duration +
+            "<br>" + "End time: " + time + "<br>" + "Attempts: " + attempts;
+	   Add_tooltip( $("#history table tr:last-child td:nth-child(3)"), content );
+
 	}
+     $("#history table tr td:first-child").each( function(){
+        Add_tooltip( $(this), $(this).html(), true );
+    }); 
 	$('.tooltip').tooltipster();
+	Recalibrate_table();
       }
     },
     error: function( jqXHR, textStatus ) {
@@ -709,10 +760,15 @@ function Monitor() {
       success: function( response ) {
 	if ( response.fields ){
 	  $("#download_ongoing td").eq(0).html(response.fields.filename);
+      Add_tooltip( $("#download_ongoing tr:first-child td:first-child"), $("#download_ongoing tr:first-child td:first-child").html(), true );
+      $('.tooltip').tooltipster();	
 	  $("#download_ongoing td").eq(1).html(response.fields.size);
 	  if ($('#download_ongoing td').find('#queue_warning').length > 0) {
 	    $("#download_ongoing td").eq(2).html(response.fields.status);
-		$('#download_ongoing td').eq(2).append("<img id='queue_warning' title='It may take quite a while to receive the package at this point; it is recommended to try another package if available to avoid waiting' data-toggle='tooltip' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+          $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+          var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+          Add_tooltip( $("#download_ongoing td").eq(2), content );
+          $('.tooltip').tooltipster();	
 	  } else {
 	    $("#download_ongoing td").eq(2).html(response.fields.status);
 	  }
@@ -744,7 +800,10 @@ function Monitor() {
                 } else {
 		            if ($('#download_ongoing td').find('#queue_warning').length <= 0) {
 		              //stay in queue, but display a warning that this may take quite a while
-		              $('#download_ongoing td').eq(2).append("<img id='queue_warning' title='It may take quite a while to receive the package at this point; it is recommended to try another package if available to avoid waiting' data-toggle='tooltip' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+                      Add_tooltip( $("#download_ongoing td").eq(2), content );
+                      $('.tooltip').tooltipster();	
 		            }
                 }
             } else {
@@ -776,7 +835,9 @@ function Monitor() {
 			            "</tr>"
 			          );
 		              $("#queue table").prepend(item);
-		              requeued_list.append(filename);
+		              Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html(), true );
+	                  $('.tooltip').tooltipster();	
+		              requeued_list.push(filename);
 		            }
 		          },
 		          error: function( jqXHR, textStatus ) {
@@ -786,7 +847,10 @@ function Monitor() {
 	            } else {
 		          if ($('#download_ongoing td').find('#queue_warning').length <= 0) {
 		            //stay in queue, but display a warning that this may take quite a while
-		            $('#download_ongoing td').eq(2).append("<img id='queue_warning' title='It may take quite a while to receive the package at this point; it is recommended to try another package if available to avoid waiting' data-toggle='tooltip' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+                      Add_tooltip( $("#download_ongoing td").eq(2), content );
+                      $('.tooltip').tooltipster();	
 		          }
 	            }
 	        }
@@ -823,8 +887,9 @@ function Monitor() {
                             average = Testnull(response.fields.average, "speed"),
                             time = Testnull(response.fields.time),
                             size = Testnull(response.fields.size),
+                            attempts = Testnull(response.fields.attempts),
                             duration = Testnull(response.fields.duration);
-                              item.push( "<tr id='" + response.pk + "'>" +
+                            item.push( "<tr id='" + response.pk + "'>" +
                                 "<td id='opendir'>" + filename  + "</td>" +
                                 "<td>" + size + "</td>" +
                                 "<td class='tooltip' title='" +
@@ -836,11 +901,8 @@ function Monitor() {
                                 "</tr>"
 	                              );
 	                           $("#history table").prepend(item);
-	                           var mytr = $("#history table tr:first-child td:first-child");
-	                           if ( mytr.width() >= 400 ){
-	                             mytr.addClass('tooltip');
-	                             mytr.attr('title', filename);
-                               }
+                               Add_tooltip( $("#history table tr:first-child td:first-child"), $("#history table tr:first-child td:first-child").html(), true );
+	                           $('.tooltip').tooltipster();
 	                        }
 
                         cancel = false;
@@ -893,6 +955,8 @@ function Monitor() {
       setTimeout(Monitor, 1000);
     }
   });
+  Recalibrate_table();
+
 }
 };
 

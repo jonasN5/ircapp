@@ -76,6 +76,11 @@
                 $('[id^="nextpage"]').click(function() { window.location.replace(Pageurl("next")) });
             } else {
                 //some css to change the color
+                $('[id^="nextpage"]').css({"pointer-events":"none",
+                                        "opacity":0.7,
+                                        "color":"#CCC"
+                                        });
+                
             }
             $('[id^="prevpage"]').click(function() { window.location.replace(Pageurl("prev")) });
             $('[id^="firstpage"]').click(function() { window.location.replace(Pageurl("first")) });
@@ -128,6 +133,9 @@
 		                            "</tr>"
 		                          );
 	                              $("#queue table").prepend(item);
+	                              Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html() );
+	                              $('.tooltip').tooltipster();	
+	                              Recalibrate_table();
                                 }
                             }
                         });

@@ -13,7 +13,6 @@ There are currently two .deb files available.
 
 *   FULL Version :  
     Use this version if you do not program python and didn't install any of the following packages (this is the dependency list):      
-    
     *   irc
     *   requests
     *   cherrypy
@@ -22,12 +21,10 @@ There are currently two .deb files available.
     
     If you have these packages, there might be an error during the installation (file overwrite).
     Install with:          
-    
         sudo dpkg -i IRCapp_1.1_full.deb
 
 *   MIN Version :  
-    Use this version in any other case. To install, run:         
-     
+    Use this version in any other case. To install, run:          
         sudo apt-get install python3-pip
         sudo pip3 install django irc requests cherrypy pytz
         sudo dpkg -i IRCapp_1.1_min.deb
@@ -41,7 +38,6 @@ ircappwebmaster@gmail.com
 ###To do's
 This is the first stable open-beta version (1.1).  
 As such, a few major things still need to be done:  
-
 *   Add OSX distribution
 *   Clean up the code and add documentation (didn't really have the time...)
 *   Add SSL support
