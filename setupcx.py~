@@ -25,7 +25,7 @@ shutil.copytree( srcDir, dstDir)
 
 setup(
     name = 'IRCapp',
-    version = '1.1.1',
+    version = '1.1',
     description = 'Simple IRC app based on irclib to download quickly using the ixirc search engine',
     author = 'MrJ',
     author_email = 'ircappwebmaster@gmail.com',

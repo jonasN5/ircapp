@@ -395,9 +395,9 @@ def monitor(request):
                 monitor['fields']['attempts'] = Resume_Backup.objects.latest("id").attempts
                 if download_object.eta:
                     if localtime(download_object.eta).date() == utcnow().date():
-                        monitor['fields']['eta'] = 'at ' + localtime(download_object.eta).time().strftime('%H:%M:%S')
+                        monitor['fields']['eta'] = localtime(download_object.eta).time().strftime('%H:%M:%S')
                     else:
-                        monitor['fields']['eta'] = 'on ' + localtime(download_object.eta).strftime('%d %b %H:%M:%S')
+                        monitor['fields']['eta'] = localtime(download_object.eta).strftime('%d %b %H:%M:%S')
                 if download_object.timeleft:
                     if download_object.timeleft > 3600:
                         monitor['fields']['timeleft'] = time.strftime('%H h %M min %S sec', time.gmtime(download_object.timeleft))

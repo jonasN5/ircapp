@@ -46,10 +46,5 @@ As such, a few major things still need to be done:
 *   Clean up the code and add documentation (didn't really have the time...)
 *   Add SSL support
 
-###Added in 1.1.1 (since 1.1) :
-*   Fixed an issue with item queue replacing
-*   Completion time is now displayed properly
-*   Version in the "about" box matches the current version
-
 
 

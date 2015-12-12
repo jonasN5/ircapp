@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='ircapp',
-      version='1.1.1',
+      version='1.1',
       author='MrJ',
       author_email='ircappwebmaster@gmail.com',
       description='IRC download application',

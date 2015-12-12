@@ -74,7 +74,7 @@
   <!-- </div> -->
   <div style="text-align:center;padding-top:60px" class="mdl-card__supporting-text">
     <img style="margin-right:8px;margin-bottom:8px" src="{{STATIC_URL}}ic_ircapp_logo_bluegray.svg" height="32px"><br>
-    v<strong>2015</strong>1127 (Linux) &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" id="log">Log file</a><br><br>
+    v<strong>1.1.1</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" id="log">Log file</a><br><br>
     <strong>Code by MrJ &middot; Art by Schickele</strong><br>
     Inspired by the search king’s dev site<br>
     &copy; 2015 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
@@ -678,7 +678,7 @@ function Testnull(data, what) {
       return data + " kB/s";
     } else {
       if ( typeof data !== "undefined" ){
-	    if ( data !== null ){
+	    if ( (''+data).indexOf("null") < 0 && (''+data).indexOf("undefined") < 0){
 	      return data;
 		} else {
 	      return "";
@@ -774,8 +774,8 @@ function Monitor() {
 	  }
 	  sz = response.fields.completed + " of " + response.fields.size;
 	  eta = response.fields.eta;
-	  est = response.fields.timeleft
-	  $("#download_ongoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left <" + eta + ">"));
+	  est = response.fields.timeleft;
+	  $("#download_ongoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
 	  $("#download_ongoing td").eq(5).html(Testnull(response.fields.speed, "speed"));
 	  active = response.fields.active;
 	  //if ( Testnull(response.fields.progress) != "" ){
@@ -786,14 +786,14 @@ function Monitor() {
 	  }
 	  //8 = empty
 
-	  if ( response.fields.status.indexOf("queue") > 0 ){
+	  if ( response.fields.status.indexOf("queue") >= 0 ){
 	    if ( queue_counter === 0 ){
 	      Mycounter = setInterval( Queue_Counter, 1000);
 	    } else {
 	      if ( queue_counter >= 30 ){
 	        clearInterval(Mycounter);
 	        queue_counter = 0;
-	        if ( requeued_list.indexOf(response.fields.status) > 0 ){
+	        if ( requeued_list.indexOf(response.fields.filename) >= 0 ){
 	            //in this case, the item has already been requeued once, so either stay with it, or remove it if shutdown option is ON
 	            if ( $("#shutdown").is(':checked') ){
 	                $.get( "/cancel_download/", { par : "cancel" } );
@@ -880,32 +880,7 @@ function Monitor() {
                       data: { pk : pk },
 
                       success: function( response ) {
-                        if ( response.fields ) {
-                          var item = [],
-                            filename = response.fields.filename,
-                            status = response.fields.status,
-                            average = Testnull(response.fields.average, "speed"),
-                            time = Testnull(response.fields.time),
-                            size = Testnull(response.fields.size),
-                            attempts = Testnull(response.fields.attempts),
-                            duration = Testnull(response.fields.duration);
-                            item.push( "<tr id='" + response.pk + "'>" +
-                                "<td id='opendir'>" + filename  + "</td>" +
-                                "<td>" + size + "</td>" +
-                                "<td class='tooltip' title='" +
-                                    "Download information:&#013;" + "Average speed: " + average + "&#013;" + "Duration: " + duration +
-                                    "&#013;" + "End time: " + time + "&#013;" + "Attempts: " + attempts +
-                                "'>" + status +
-                                "</td>" +
-                                "<td><img id='delete_pic' class='history' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
-                                "</tr>"
-	                              );
-	                           $("#history table").prepend(item);
-                               Add_tooltip( $("#history table tr:first-child td:first-child"), $("#history table tr:first-child td:first-child").html(), true );
-	                           $('.tooltip').tooltipster();
-	                        }
-
-                        cancel = false;
+                         cancel = false;
                       },
 
                       error: function( jqXHR, textStatus ) {
