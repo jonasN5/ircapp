@@ -315,7 +315,7 @@ def xdcc(data, filename="", resume=False):
     down.save()
     size, server, channel, xdccbot, xdccrequest = data.split(",")
     msg = "xdcc send #%s" % xdccrequest
-    irc.client.ServerConnection.buffer_class = irc.buffer.LenientDecodingLineBuffer
+    irc.client.ServerConnection.buffer_class.encoding = 'latin-1';
     c = DCCReceive(xdccbot, msg, channel, size, filename)
     #anonymous nickname
     nickname = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
