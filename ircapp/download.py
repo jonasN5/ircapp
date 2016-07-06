@@ -4,6 +4,7 @@
 
 import sys, json
 import os
+import errno
 import struct
 import argparse
 import shlex
@@ -371,10 +372,18 @@ def untar(completefile, filename):
                 #remove rest
                 for fl in os.listdir(extractTarPath):
                     ext = splitext(fl)[1].lower()
-                    if os.path.isdir(os.path.join(extractTarPath, fl)):
-                        shutil.rmtree(os.path.join(extractTarPath, fl))
+                    pathToDelete = os.path.join(extractTarPath, fl)
+                    if os.path.isdir(pathToDelete):
+                    # Do not delete non-empty dirs, could contain useful files.
+                        try:
+                            os.rmdir(pathToDelete);
+                        except OSError as ex:
+                            if ex.errno == errno.ENOTEMPTY:
+                                log("Did not delete non-empty directory : %s" %  pathToDelete).write()
+                            else:
+                                log("An error occurred deleting directory : %s" % pathToDelete).write()
                     else:
-                        if ext[:2] == '.r' or ext == '.sfv' or ext == '.nfo' or 'sample' in fl:
+                        if ext[:2] == '.r' or ext in ['.sfv', '.nfo', '.png', '.jpg'] or 'sample' in fl:
                             os.remove(os.path.join(extractTarPath, fl))
             #remove UNPACK from name when done
             os.rename(extractTarPath, os.path.join(directory(), splitext(filename)[0]))
