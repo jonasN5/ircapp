@@ -1,9 +1,12 @@
 # ircapp
 #
-# BUILD: docker build --no-cache --rm -t ircapp .
+# BUILD: docker build --no-cache --build-arg TIMEZONE=`cat /etc/timezone` --rm -t ircapp .
 # RUN:   docker run --restart="unless-stopped" --name ircapp -p 127.0.0.1:8083:8020 -v $DB_ROOT:/root/.IRCapp -v $DOWNLOAD_ROOT:/root/Downloads --detach=true ircapp 
 
 FROM phusion/baseimage:0.9.15
+
+# Default
+ARG TIMEZONE=Europe/Paris
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
@@ -19,7 +22,7 @@ COPY . /ircapp
 RUN mkdir $HOME/.IRCapp
 
 # Fixup timezone, if necessary.
-RUN cd /ircapp; sed -i "/^timezone.*/c\timezone = $(cat /etc/timezone)" config.ini
+RUN cd /ircapp; sed -i "/^timezone.*/c\timezone = $TIMEZONE" config.ini
 
 # Do not run in debug mode, if necessary.
 RUN cd /ircapp; sed -i "/^DEBUG = True/c\DEBUG = False" settings.py
