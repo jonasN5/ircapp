@@ -77,8 +77,8 @@ class DCCReceive(irc.client.SimpleIRCClient):
         self.hist = hist
         self.cancel = False
         self.position = 0
+        self.queued = False
 
-                
     def stop(self, connection):
         while Download_Ongoing.objects.get(id=down.id).active == True:
             time.sleep(0.5)
@@ -89,6 +89,11 @@ class DCCReceive(irc.client.SimpleIRCClient):
         elif Download_Ongoing.objects.get(id=down.id).status == "Shutdown":
             log("Download interrupted by a user shutdown/restart").write()
         self.cancel = True
+        if connection.connected and self.queued:
+            # We don't want to leave dangling queues on cancellation.
+            self.queued = False
+            log("Removing from XDCC queue").write()
+            connection.privmsg(self.bot, "XDCC REMOVE")
         self.reactor.disconnect_all()
         return ""
 
@@ -97,8 +102,11 @@ class DCCReceive(irc.client.SimpleIRCClient):
     def retry_pack(self, connection):
         if self.received_bytes == 0:
             if connection.connected:
-                connection.privmsg(self.bot, self.msg)
-                log("Package requested again").write()
+                if self.queued:
+                    log("Waiting in XDCC bot's queue").write()
+                else:
+                    connection.privmsg(self.bot, self.msg)
+                    log("Package requested again").write()
 
     def on_welcome(self, connection, event):
         connection.join(self.channel)
@@ -108,7 +116,7 @@ class DCCReceive(irc.client.SimpleIRCClient):
             log("Channel #mg-chat joined to be able to download").write()
         connection.privmsg(self.bot, self.msg)
         log("Channel joined (%s) and package requested" % self.channel).write()
-        down.status, down.sizeraw = "Waiting for package (in queue)...", self.size
+        down.status, down.sizeraw = "Waiting for package (in IRCapp queue)...", self.size
         down.save()
         s=threading.Timer(60.0, self.retry_pack, [connection])
         s.daemon=True
@@ -158,6 +166,8 @@ class DCCReceive(irc.client.SimpleIRCClient):
     def process(self, c, e, resume=False):
         #"When receiving a file with DCC, accept it"
         downloads_dir = directory()
+        # No longer queued, if download stalls here it's an actual problem.
+        self.queued = False
 
         if resume:
             self.file = open(os.path.join(downloads_dir, self.filename), 'ab')
@@ -244,6 +254,11 @@ class DCCReceive(irc.client.SimpleIRCClient):
             self.hist.save()
 
             log("Discarding download due to invalid pack number, proceeding to next item in queue if existing.").write()
+        if "all slots full" in str(a).lower():
+            self.queued = True
+            log("Added to XDCC bot's queue").write()
+            down.status = "Waiting for package (in XDCC bot queue)..."
+            down.save()
 
     def on_dccchat(self, c, e):
         log("dccchat").write()
@@ -288,7 +303,9 @@ def DCC_deamonthread(c, server, nickname, hist, down):
     try:
         c.connect(server, 6667, nickname)
         c.start()
-    except irc.client.ServerConnectionError as x:
+    # On Mac OS irc's process_once() seems to throw OSError: [Errno 9] Bad file descriptor
+    # during disconnect, we can just suppress the error here but we should log.
+    except (irc.client.ServerConnectionError, OSError) as x:
         log("error" + str(x)).write()
         hist.status, hist.time, hist.sizeraw = "Error during connection", utcnow(), size
         hist.save()
