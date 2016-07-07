@@ -786,7 +786,7 @@ function Monitor() {
 	  }
 	  //8 = empty
 
-	  if ( response.fields.status.indexOf("queue") >= 0 ){
+	  if ( response.fields.status.indexOf("IRCapp queue") >= 0 ){
 	    if ( queue_counter === 0 ){
 	      Mycounter = setInterval( Queue_Counter, 1000);
 	    } else {
@@ -808,7 +808,8 @@ function Monitor() {
                 }
             } else {
                 //in this case, the item is in queue for 30 seconds for the first time
-	            if ($('#queue table').children().length > 0 ){
+	            var inBotQueue = response.fields.status.indexOf("XDCC bot queue") >= 0;
+		    if ($('#queue table').children().length > 0 && !inBotQueue) {
 		        //move the item to the end of the queue and start next download
 		        $.ajax({
 		          url: "/cancel_download/",
