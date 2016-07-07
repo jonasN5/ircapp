@@ -74,7 +74,7 @@
   <!-- </div> -->
   <div style="text-align:center;padding-top:60px" class="mdl-card__supporting-text">
     <img style="margin-right:8px;margin-bottom:8px" src="{{STATIC_URL}}ic_ircapp_logo_bluegray.svg" height="32px"><br>
-    v<strong>1.1.1</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" id="log">Log file</a><br><br>
+    v<strong>1.1.1</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" href="/log/">Log file</a><br><br>
     <strong>Code by MrJ &middot; Art by Schickele</strong><br>
     Inspired by the search king’s dev site<br>
     &copy; 2015 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
@@ -356,9 +356,6 @@ $('#about_button').click(function(event) {
     $("#down").hide();
     $("#settings_div").hide();
   }
-});
-$('#log').click(function(event) {
-  $.get( "/log/" );
 });
 
 /// now comes the rest
