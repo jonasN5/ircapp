@@ -5,6 +5,7 @@ from ircapp.models import Download_Path
 
 def directory():
     if Download_Path.objects.all().count() == 0:
+        #temporary solution to get download path for english, german and french speaking users to avoid third party dependancy
         default = os.path.join(os.path.expanduser('~'), _('Downloads'))
         if not os.path.exists(default):
             default = os.path.join(os.path.expanduser('~'), _('Téléchargements'))
