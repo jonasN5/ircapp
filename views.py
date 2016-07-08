@@ -124,15 +124,10 @@ def delete_pref(request):
         return HttpResponse("")
 
 def read_log(request):
-    if sys.platform == "win32":
-        os.startfile(log().my_log)
-    else:
-        opener ="open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, log().my_log])
-    return HttpResponse("")
-
-    
-    
+    log_file = open(log().my_log)
+    response = HttpResponse(content=log_file)
+    response['Content-Type'] = 'text/plain'
+    return response
     
 def index(request):
 
