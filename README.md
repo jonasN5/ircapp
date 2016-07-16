@@ -32,8 +32,8 @@ There are currently two .deb files available.
         sudo pip3 install django==1.8.5 irc requests cherrypy pytz
         sudo dpkg -i IRCapp_1.1.1_min.deb
 *   In case you choose to clone the source code, for instance if you implement a server, you should run :
+       
         sudo pip3 install django==1.8.5 irc requests cherrypy pytz rarfile
-        
 ##OSX
 I'm currently trying to get a Mac and will create a Mac distribution ASAP !
 
