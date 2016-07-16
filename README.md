@@ -19,6 +19,7 @@ There are currently two .deb files available.
     *   cherrypy
     *   django
     *   pytz
+    *   rarfile
     
     If you have these packages, there might be an error during the installation (file overwrite).
     Install with:          
@@ -29,7 +30,7 @@ There are currently two .deb files available.
     Use this version in any other case. To install, run:         
      
         sudo apt-get install python3-pip
-        sudo pip3 install django irc requests cherrypy pytz
+        sudo pip3 install django==1.8.5 irc requests cherrypy pytz rarfile
         sudo dpkg -i IRCapp_1.1.1_min.deb
         
 ##OSX
