@@ -17,39 +17,50 @@ There are currently two .deb files available.
     *   irc
     *   requests
     *   cherrypy
-    *   django
+    *   django 1.8.5
     *   pytz
+    *   rarfile
+    *   miniupnpc
+    *   unrar
+    *   tk
     
     If you have these packages, there might be an error during the installation (file overwrite).
     Install with:          
     
-        sudo dpkg -i IRCapp_1.1.1_full.deb
+        sudo dpkg -i IRCapp_2.0_full.deb
 
 *   MIN Version :  
     Use this version in any other case. To install, run:         
      
-        sudo apt-get install python3-pip
-        sudo pip3 install django irc requests cherrypy pytz
-        sudo dpkg -i IRCapp_1.1.1_min.deb
-        
+        sudo apt-get install python3-pip python3-tk
+        sudo pip3 install django==1.8.5 irc requests cherrypy pytz miniupnpc
+        sudo dpkg -i IRCapp_2.0_min.deb
+*   In case you choose to clone the source code, for instance if you implement a server, you should run :
+
+        sudo apt-get install unrar python3-tk       
+        sudo pip3 install django==1.8.5 irc requests cherrypy pytz rarfile miniupnpc
 ##OSX
 I'm currently trying to get a Mac and will create a Mac distribution ASAP !
 
 ##Contact
 ircappwebmaster@gmail.com
 
-###To do's
-This is an open-beta version (1.1.1).  
-As such, a few major things still need to be done:  
+###To do's  
+A few major things still need to be done:  
 
 *   Add OSX distribution
-*   Clean up the code and add documentation (didn't really have the time...)
 *   Add SSL support
 
-###Added in 1.1.1 (since 1.1) :
-*   Fixed an issue with item queue replacing
-*   Completion time is now displayed properly
-*   Version in the "about" box matches the current version
-
+###Changelog 2.0 (since 1.1.1) :
+*   Add: Direct File Transfer (you can now send any file to any IRCapp user)
+*   Add: multiple simultaneous downloads
+*   Add: queue option to optimize multiple simultaneous downloads
+*   Add: documentation (you can always add more, but I already cleaned up the mess quite a lot)
+*   Change: queue management is now handle server side, it should be less unstable than in the previous version
+*   Change: if IRCapp is already running and you run it again, a new browser tab will be displayed to IRCapp's index page
+*   Change: upon restarting IRCapp (with the button), no new tab will be opened; the initial tab will refresh itself
+*   Change: the Quick Download option now uses more servers to work more often
+*   Change: the download directory is now selected via a menu
+*   A few other things probably too...
 
 

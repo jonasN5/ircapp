@@ -6,6 +6,7 @@
   <head>
     <title>{% block title %}IRCapp-Shutdown{% endblock %}</title>
     <link href="{{STATIC_URL}}favicon.ico" rel="shortcut icon" type="image/ico"></link>
+    <link rel="stylesheet" href="{{STATIC_URL}}material.min.css"></link>
   </head>
 
 
@@ -14,10 +15,17 @@
     DOM beginning
 
   -->
+<body>
+        <style type='text/css'>
+        body
+	    {background-image:
+		    url(/static/ic_ircapp_shutdown.svg);
+		    background-position:
+			    50%
+			    50%;
+		    background-repeat: no-repeat;}
+        </style>
 
-  <div>
-    IRCapp has shutdown gracefully!
-  </div>
 
   </body>
 </html>

@@ -39,6 +39,28 @@ a {
   margin-top: 16px;
 }
 
+#upload {
+  background: #FFF none repeat scroll 0% 0%;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.12), 0px 2px 4px rgba(0, 0, 0, 0.24);
+  margin-top: 10px;
+  padding-bottom: 16px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: absolute;
+  transition: transform 0.2s ease 0s, visibility 0.2s ease 0s;
+  transform: translateY(0px);
+  width: 100%;
+  z-index: -1;
+  width: inherit;
+}
+
+#upload-content {
+  font-size: 14px;
+  float: right;
+  width: calc(100% - 72px);
+  margin-top: 16px;
+}
+
 #delete_pic {
   opacity: 0.4;
 }
@@ -147,11 +169,11 @@ a {
   float: right;
 }
 
-#down table {
+#down table, #upload_ongoing table {
   width: 100%;
 }
 
-#down table tr td:first-of-type {
+#down table tr td:first-of-type, #upload_ongoing table tr td:first-of-type {
   max-width: 380px;
   white-space: nowrap;
   overflow: hidden;
@@ -159,18 +181,18 @@ a {
   padding-right: 8px;
 }
 
-#down table tr td:nth-child(2) {
+#down table tr td:nth-child(2), #upload_ongoing table tr td:nth-child(2) {
   padding-right: 8px;
   text-align: right;
   max-width: 100px;
 }
 
-#down table tr td:nth-child(3) {
+#down table tr td:nth-child(3), #upload_ongoing table tr td:nth-child(3) {
   padding-right: 8px;
   width: 215px;
 }
 
-#down table tr td:nth-child(4) {
+#down table tr td:nth-child(4), #upload_ongoing table tr td:nth-child(4) {
   text-align: right;
   width: 20px;
 }
@@ -180,7 +202,7 @@ a {
   overflow-y: auto;
 }
 
-#download_ongoing {
+#download_ongoing, #upload_ongoing {
   color: #212121;
 }
 
@@ -203,7 +225,20 @@ a {
   background: url(/static/ic_history_blue.svg) no-repeat center left 16px;
 }
 
-#progressbox {
+.ic-download {
+  background: url(/static/ic_download_blue.svg) no-repeat center left 16px;
+}
+
+.ic-upload {
+  background: url(/static/ic_upload_blue.svg) no-repeat center left 16px;
+}
+
+.downbox_opt {
+  position: relative;
+  float: right;
+}
+
+.progressbox, .upload_progressbox {
   background-color: #abe4fd;
   border-radius: 0px;
   border: none;
@@ -213,7 +248,7 @@ a {
   width: 50%;
 }
 
-#progressbar {
+.progressbar, .upload_progressbar {
   height: 18px;
   background-color: #03a9f4;
   width: 0%;
@@ -260,9 +295,10 @@ a {
 }
 
 #downbox_options {
-  float: right;
+/*  float: right; */
   padding-top: 8px;
   padding-right: 8px;
+  display: inline-block;
 }
 
 /* ########################################################## */
@@ -288,6 +324,10 @@ a {
 
 .mdl-card__title {
   background-color: #03a9f4;
+}
+
+.mdl-card__title_up {
+  background-color: #455A64;
 }
 
 .mdl-card__title-text {
@@ -366,6 +406,11 @@ a {
   color: rgba(0, 0, 0, 0.54);
   font-size: 13px;
   line-height: inherit;
+}
+
+.mdl-checkbox {
+  width: initial;
+  padding-right: 16px;
 }
 
 /* ########################################################## */

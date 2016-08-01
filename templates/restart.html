@@ -6,8 +6,9 @@
   <head>
     <title>{% block title %}IRCapp-Restart{% endblock %}</title>
     <link href="{{STATIC_URL}}favicon.ico" rel="shortcut icon" type="image/ico"></link>
+    <link rel="stylesheet" href="{{STATIC_URL}}material.min.css"></link>
+    <script src="{{STATIC_URL}}jquery.min.js"></script>
   </head>
-
 
   <!--
 
@@ -15,10 +16,36 @@
 
   -->
 
-  <div>
-    Please wait while IRCapp reboots. It may take a moment...<br>
-    A new window will open automatically!
-  </div>
 
-  </body>
+<body>
+    <style type='text/css'>
+        body
+        {background-image:
+        url(/static/ic_ircapp_restart.svg);
+        background-position:
+        50%
+        50%;
+        background-repeat: no-repeat;}
+    </style>
+    <script>
+        function Pingserver(){
+                $.ajax({
+                    url: "/restart_server/",
+                    type: "get",
+                    data : { par : "respawn" },
+                    success: function( response ) {
+                        if ( response === "restarted" ) {
+                            window.location.replace("/")
+                        }
+                    }
+                });
+        }; 
+
+        $(document).ready( function () {
+            setTimeout(Pingserver, 17000);
+        });
+        
+    </script>    
+</body>
+          
 </html>

@@ -1,0 +1,196 @@
+[33mcommit e543f507b8628069d913b81a85e62a4eb9a20cc3[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Tue Jul 12 14:19:12 2016 +0200
+
+    Update download.py
+
+[33mcommit 1d21cbce4ea23bf69c8261db2c6dd0fb4cb74b71[m
+Merge: 52ad60c c0d8f8d
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Fri Jul 8 15:02:34 2016 +0200
+
+    Merge pull request #8 from stefanmb/fix-remote-log
+    
+    Display log through web browser
+
+[33mcommit c0d8f8dd5591ee694bfb384512456881c0711928[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Thu Jul 7 09:45:23 2016 -0400
+
+    Replace Sourceforge with Github for reporting issues
+
+[33mcommit 40d5c1bf54df24d837d94866a23165a274478082[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Thu Jul 7 09:44:10 2016 -0400
+
+    Make log viewable from remote server
+
+[33mcommit 52ad60c1b778cf1a7b0bf0ce099617ce3cba1b45[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Thu Jul 7 10:55:38 2016 +0200
+
+    Update logs.py
+
+[33mcommit 07df37af689e486ffb00b922f135dd1eeb8fa8eb[m
+Merge: 8ad6067 3456577
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Thu Jul 7 10:40:01 2016 +0200
+
+    Merge pull request #4 from stefanmb/dockerfile-fix-tz
+    
+    Fix timezone setting in Dockerfile
+
+[33mcommit 8ad60670a11f23557bdff7dd45f1d7d42a05cd20[m
+Merge: 51a5717 2f2ca47
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Thu Jul 7 10:37:35 2016 +0200
+
+    Merge pull request #3 from stefanmb/encoding
+    
+    Use Latin-1 encoding to avoid freeze on download start
+
+[33mcommit 51a57178bd0dac8ebc1103c51e782b0b16a3412c[m
+Merge: 0ad682c d61370c
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Thu Jul 7 10:34:50 2016 +0200
+
+    Merge pull request #5 from stefanmb/fix_untar
+    
+    Prevent data loss on untaring in corner case
+
+[33mcommit d61370cbce2123f29fb9ce7e7b3802337204bbf4[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Wed Jul 6 17:46:56 2016 -0400
+
+    Prevent data loss on untaring in corner case
+
+[33mcommit 3456577b8744121ab34d558986c409b200748fe3[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Wed Jul 6 12:47:58 2016 -0400
+
+    Fix timezone setting in Dockerfile
+
+[33mcommit 0ad682ce05d9fefeb9b0ec3f0e7bc68a6aee8117[m
+Merge: 6153935 fcdc27d
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Wed Jul 6 00:11:10 2016 +0200
+
+    Merge pull request #2 from stefanmb/dockerfile
+    
+    Dockerfile to ease deployment of IRCapp; thnx @stefanmb
+
+[33mcommit fcdc27d09cf596e6c21f3a59c2eaa3724553f772[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Tue Jul 5 17:38:45 2016 -0400
+
+    Add unrar to Dockerfile
+
+[33mcommit 0e19b0e70fc376021f0bd6228277de3d283c6e19[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Tue Jun 28 16:06:38 2016 -0400
+
+    Add Dockerfile
+
+[33mcommit 2f2ca47e9b310bdd5c0be045831d486485e40277[m
+Author: Stefan Budeanu <stefan@budeanu.com>
+Date:   Tue Jul 5 01:35:57 2016 -0400
+
+    Use Latin-1 encoding to avoid freeze on startup
+
+[33mcommit 61539357a51491ec6b204c452336d4a5422ffc01[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Sat Dec 12 17:42:20 2015 +0100
+
+    v1.1.1
+
+[33mcommit 5f9dc0a1b8c776d3467ea10ad2cec31ddebba6f6[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Sat Dec 12 17:39:27 2015 +0100
+
+    v1.1.1
+
+[33mcommit bc3f6b843efa0409c66190412b7e0cf86ad65159[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Tue Dec 8 20:39:18 2015 +0100
+
+    open beta release
+
+[33mcommit 1d0177222d46d0260ec978f38760ec250c8fcffc[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Tue Dec 8 20:34:39 2015 +0100
+
+    open beta release
+
+[33mcommit a035b6998fccbb5979815bb3c028cac01fb2abec[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Sun Nov 29 00:28:18 2015 +0100
+
+    Full debian distribution support
+
+[33mcommit 39e43e8bb113c46b96159acdbd4e62675da48321[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Sat Nov 28 22:46:49 2015 +0100
+
+    Fixed bad total size display
+
+[33mcommit 92c470a7131e27f35fa9fd3f4b2471e78056191f[m
+Merge: 11bb5a8 3d6f0fc
+Author: J <jonas.schalck@gmail.com>
+Date:   Sat Nov 28 17:46:26 2015 +0100
+
+    Merge https://github.com/themadmrj/ircapp
+
+[33mcommit 11bb5a82cc7fdb3829b5d6a4e0a572b7d742cf54[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Sat Nov 28 17:44:26 2015 +0100
+
+    Fixed shutdown/restart
+
+[33mcommit 3d6f0fc0a7506a4d84f778eff757334cd1afa235[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Fri Nov 27 16:34:32 2015 +0100
+
+    Delete README.md~
+
+[33mcommit 51a90b670667eac7ebe3af0fc90ddf25683cf8a4[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Fri Nov 27 16:33:43 2015 +0100
+
+    First stable beta release
+
+[33mcommit f3fb692f718e1e8939af8313b7c3e367d39aa85f[m
+Merge: 4dc4514 6d765bb
+Author: J <jonas.schalck@gmail.com>
+Date:   Fri Nov 27 16:28:11 2015 +0100
+
+    Merge https://github.com/themadmrj/ircapp
+
+[33mcommit 4dc45146c850a9ab50ca50f6a066865b5843d2a4[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Fri Nov 27 16:27:25 2015 +0100
+
+    First stable beta release
+
+[33mcommit 6d765bb3f343268611ab5dfa4198e6dffd0717b3[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Fri Nov 27 16:25:52 2015 +0100
+
+    Delete README.md
+
+[33mcommit 655a9bff8399a0f158774c31e66b56434e68b0fb[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Fri Nov 27 16:25:45 2015 +0100
+
+    Delete LICENSE
+
+[33mcommit 11914698effbcda85fb7b7d3f93b5b98d986c2de[m
+Author: J <jonas.schalck@gmail.com>
+Date:   Fri Nov 27 16:22:42 2015 +0100
+
+    First stable beta release
+
+[33mcommit b2bc248ce76a7a58f8aa88fdcb668b411654f80f[m
+Author: themadmrj <themadmrj@users.noreply.github.com>
+Date:   Thu Nov 12 20:59:27 2015 +0100
+
+    Initial commit

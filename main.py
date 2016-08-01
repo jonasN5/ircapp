@@ -15,22 +15,21 @@ from ircapp.models import *
 from ircapp.download import *
 from ircapp.forms import *
 from ircapp.logs import *
+import views
+queuedict = {}
 
-class DjangoApplication(object):
-    HOST = "127.0.0.1"
-    PORT = 8020
+HOST = "127.0.0.1"
+PORT = 8020
 
-    with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:    
-        content = cfg.readlines()
-        HOST = content[0][12:-1].strip(" ")
-        PORT = int(content[1][6:-1].strip(" "))   
+ 
+class IRCapp(object):
 
     def open_browser(self):
         while True:
             try:
-                c = requests.get('http://' + self.HOST + ':' +  str(self.PORT) + '/')
+                c = requests.get('http://' + HOST + ':' +  str(PORT) + '/')
                 if c.status_code == 200:
-                    webbrowser.open_new_tab('http://' + self.HOST + ':' +  str(self.PORT) + '/')
+                    webbrowser.open('http://' + HOST + ':' +  str(PORT) + '/')
                     break
             except Exception as e:
                 time.sleep(0.2)     
@@ -50,29 +49,48 @@ class DjangoApplication(object):
 
     def run(self):
         cherrypy.config.update({
-            'server.socket_host': self.HOST,
-            'server.socket_port': self.PORT,
-            'engine.autoreload_on': False,
+            'server.socket_host': HOST,
+            'server.socket_port': PORT,
+            'engine.autoreload.on': False,
             'log.screen': True
         })
         self.mount_static(settings.STATIC_URL, settings.STATIC_ROOT)
         #cherrypy.process.plugins.PIDFile(cherrypy.engine, os.path.join(settings.BASE_DIR, 'IRCapp.pid')).subscribe()
-        cherrypy.log("Loading and serving Django application")
+        cherrypy.log("Loading and serving IRCapp")
         cherrypy.tree.graft(WSGIHandler())
         cherrypy.engine.start()
         
-        t = threading.Thread(target=self.open_browser())
-        t.deamon = True
-        t.start()        
+        obj = Download_Settings.objects.latest('id')
+        if not obj.restart:
+            t = threading.Thread(target=self.open_browser())
+            t.deamon = True
+            t.start()
+        else:
+            obj.restart = False
+            obj.save()       
 
         cherrypy.engine.block()
 
-
-
 def start_ircapp():            
-
-    application = get_wsgi_application()    
+    #update HOST and PORT with config.ini specifications
+    with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:
+        global HOST, PORT
+        content = cfg.readlines()
+        HOST = content[0][1+content[0].index("="):content[0].index("#")].strip(" ")
+        PORT = int(content[1][1+content[1].index("="):content[1].index("#")].strip(" ")) 
+        cfg.close()
     
+    #check if application is already running : open browser   
+    try:
+        c = requests.get('http://' + HOST + ':' +  str(PORT) + '/')
+        if c.status_code == 200:
+            webbrowser.open_new_tab('http://' + HOST + ':' +  str(PORT) + '/')
+            return
+    except Exception as e:
+        pass
+    
+    #launch IRCapp    
+    application = get_wsgi_application()    
     if sys.platform == "win32":
         if not os.path.isdir(os.path.join(os.environ["LOCALAPPDATA"], "IRCapp")):
             os.makedirs(os.path.join(os.environ["LOCALAPPDATA"], "IRCapp"))
@@ -81,22 +99,35 @@ def start_ircapp():
             os.makedirs(os.path.join(os.path.expanduser("~"), ".IRCapp"))     
             
     log().clear()
-    #from django.core.management import execute_from_command_line
-    #execute_from_command_line()
+
+
     try:
-        Download_Settings.objects.all().delete()
+        obj = Download_Settings.objects.latest('id')
     except:
         call_command('migrate', verbosity=0)#displaying stdout will result into an error in a GUI frozen application with cx freeze
-        Download_Settings.objects.all().delete()
-    finally:
         Download_Settings().save()
+    finally:
+        Upload_Ongoing.objects.all().delete()
         if Download_Ongoing.objects.all().count() > 0:        
-            if not Download_Ongoing.objects.latest("id").active:
-                Download_Ongoing.objects.all().delete()            
+            if not Download_Ongoing.objects.filter(active=True):
+                Download_Ongoing.objects.all().delete()
             else:
-                obj = Download_Ongoing.objects.latest("id")
-                obj.status = "Interrupted"
-                obj.save()            
+                #case where we resume interrupted downloads
+                for down_obj in Download_Ongoing.objects.all():
+                    if not down_obj.active:
+                        down_obj.delete()
+                    else:
+                        down_obj.status,  down_obj.speed, down_obj.eta, down_obj.tm = "Interrupted", None, None, None
+                        down_obj.save()
+                        views.initial_download(down_obj)
+        #in case there is a queue, let's check and launch
+        if Download_Queue.objects.all().count() > 0:
+            checklist=[]
+            for queue_obj in Download_Queue.objects.all():
+                if not queue_obj.server in checklist:
+                    views.initial_download(queue_obj, what="queue")
+                    checklist.append(queue_obj.server)
+                    queue_obj.delete()              
                 
         if Quick_Download.objects.all().count() == 0:
             Quick_Download().save()
@@ -105,9 +136,7 @@ def start_ircapp():
             Quick_Download_Excludes(excludes="cam").save()
 
     
-                
-    
-    DjangoApplication().run() 
+    IRCapp().run() 
 
 if __name__ == '__main__':
     start_ircapp()

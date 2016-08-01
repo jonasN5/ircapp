@@ -11,14 +11,14 @@ sys.path.append(os.path.join(BASE_DIR, 'ircapp'))
 
 SECRET_KEY = '!8gd%24y2x#6t^npsij&+)*pc^%jyzh=np%cr5e6#78l6xdv3w'
 #keep debug true while beta testing
-DEBUG = True
+DEBUG = False
 USE_I18N = False
 USE_TZ = True
 #DATETIME_FORMAT = 'N jS, P'
 try:
     with open(os.path.join(BASE_DIR, "config.ini"), "r") as cfg:    
         content = cfg.readlines()
-        TIME_ZONE = content[2][10:-1].strip(" ")
+        TIME_ZONE = content[3][1+content[3].index("="):content[3].index("#")].strip(" ")
 except:
     TIME_ZONE = 'Europe/Paris'
 

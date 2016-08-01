@@ -13,9 +13,9 @@ CMD ["/sbin/my_init"]
 
 # IRCapp
 RUN apt-get update && apt-get install -y \
-    python3-pip unrar
+    python3-pip unrar python3-tk
 
-RUN pip3 install django==1.8.5 irc requests cherrypy pytz rarfile
+RUN pip3 install django==1.8.5 irc requests cherrypy pytz rarfile miniupnpc
 COPY . /ircapp
 
 # Create DB directory

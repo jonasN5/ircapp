@@ -24,8 +24,7 @@ class log:
             self.my_log = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "log.txt")
         else:
             self.my_log = os.path.join(os.path.expanduser("~"), ".IRCapp", "log.txt")               
-
-            
+   
     def write(self):        
         with open(self.my_log, "a") as txtf:
             txtf.write(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + " : " + self.text + "\n")

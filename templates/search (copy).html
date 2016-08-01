@@ -39,15 +39,15 @@
 	</button>
 	<div class="mdl-layout-spacer"></div>
 	<button id="upload_button" title="Send a file" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
-		<i class="material-icons">file_upload</i>
+		<img src="{{STATIC_URL}}upload-icon.jpg" height="24px">
 	</button>
 	<button id="settings_button" title="Quick download preferences" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
 		<i class="material-icons">settings</i>
 	</button>
-	<button id="restart_button" title="Restart IRCapp" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
+	<button id="restart_button" title="Restart IRCApp" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
 		<i class="material-icons">replay</i>
 	</button>
-	<button id="shutdown_button" title="Shutdown IRCapp" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
+	<button id="shutdown_button" title="Shutdown IRCApp" style="color:#fff;margin-right:8px" class="mdl-button mdl-js-button mdl-button--icon">
 		<i class="material-icons">power_settings_new</i>
 	</button>
 	<button id="about_button" title="About" style="color:#fff;margin-right:16px" class="mdl-button mdl-js-button mdl-button--icon">
@@ -77,10 +77,10 @@
   <!-- </div> -->
   <div style="text-align:center;padding-top:60px" class="mdl-card__supporting-text">
     <img style="margin-right:8px;margin-bottom:8px" src="{{STATIC_URL}}ic_ircapp_logo_bluegray.svg" height="32px"><br>
-    v<strong>2.0</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" href="/log/">Log file</a><br><br>
+    v<strong>1.1.1</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" href="/log/">Log file</a><br><br>
     <strong>Code by MrJ &middot; Art by Schickele</strong><br>
     Inspired by the search king’s dev site<br>
-    &copy; 2015–2016 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
+    &copy; 2015 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
     <!-- <hr style="width:298px"> -->
     <a class="opacity-on-hover" target="_blank" href="https://www.python.org"><img height="18px" src="{{STATIC_URL}}ic_python_gray.svg"></a>&ensp;
     <a class="opacity-on-hover" target="_blank" href="https://www.djangoproject.com/"><img height="18px" src="{{STATIC_URL}}ic_django_gray.svg"></a>&ensp;
@@ -174,6 +174,48 @@
 
 <!--
 
+  SEND FILE (UPLOAD)
+
+-->
+
+<div id="upload_div" style="width:500px;display:none;position:fixed;left:calc(50% - 250px);top:calc(50% - 165px)"class="demo-card-square mdl-card mdl-shadow--2dp">
+  <div style="background-color:#455a64" class="mdl-card__title mdl-card--expand">
+    <span class="mdl-card__title-text">Send File</span>	       
+  </div>
+  <div class="mdl-card__supporting-text">
+    <div id="upload_filename_div">
+	<form id="upload_filename">
+	  <span class="mdl-textfield mdl-js-textfield">
+	    <input class="mdl-textfield__input" type="text" id="upload_filname_text" placeholder="Full filename with path">
+	    <label class="mdl-textfield__label" id="contains_submit" for="contains_text"></label>
+	  </span>
+	</form>
+	</div>
+    <div id="nickname_div">
+	<form id="nickname">
+	  <span class="mdl-textfield mdl-js-textfield">
+	    <input class="mdl-textfield__input" type="text" id="nickname_text" placeholder="Nickname of receiver">
+	    <label class="mdl-textfield__label" id="excludes_submit" for="contains_text"></label>
+	  </span>
+	</form>
+    </div>
+  </div>
+
+  <div class="mdl-card__menu">
+    <button id="close_upload" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">close</i>
+    </button>
+  </div>
+  
+  <div class="mdl-card__actions mdl-card--border">
+    <a id="send_file_button" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+      Send file
+    </a>
+  </div>
+</div>
+
+<!--
+
   DOWNLOAD BOX
 
 -->
@@ -181,129 +223,33 @@
 <div id="down" style="width:750px;position:fixed;right:32px;bottom:32px" class="mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
     <span class="mdl-card__title-text">Download box</span>
-    <span id="dcctransfer_information" class="mdl-card__title-text" style="display: none;">
-        <label id="get_nickname">
-	      <span class="mdl-textfield mdl-js-textfield">
-	        <label class="mdl-textfield__input" type="text" id="get_nickname_text"></label>
-	      </span>
-	    </label>
-        <label id="get_password">
-	      <span class="mdl-textfield mdl-js-textfield">
-	        <label class="mdl-textfield__input" type="text" id="get_password_text"></label>
-	      </span>
-	    </label>
-  
-    </span>    
   </div>
   <div id="folder_div">
     {% if free_space == -1 %}
-      <div id="no_dir">Couldn’t find the corresponding download folder, please set one to pursue downloading</div>
-      Download directory: <a id="base_folder" title="Double click to change">No directory set</a>
-    {% else %}
-      Download directory: <a id="base_folder" title="Double click to change">{{directory}}</a>
+    <div id="no_dir">Couldn’t find the corresponding download folder, please set one to pursue downloading</div>
     {% endif %}
+    Download directory: <a id="base_folder" title="Double click to change">{{directory}}</a>
+    <form style="display: none;" method="POST" id="download_folder" title="Please note it is case sensitive. Windows example : 'D:\downloads' Linux example : '/home/mrj/Downloads'"> {% csrf_token %}
+      {{ pathform.non_field_errors }}
+      {{ pathform.download_path }}
+      <a id='path_msg'></a>
+      <input style="display: none;" type="submit" id="submit_folder">
+    </form>
     <div style="display: none;" id="nospacediv">Insufficient harddrive space to download the file, please make some and click "home" afterwards</div>
     <span id="free_sp">{{free_space}} GB free <img style="display: none;" id='space_warning' src='{{STATIC_URL}}ic_warning_red.svg' heitgh="18px"></span>
-    <br>
-    <div id="downbox_options">
-      <label class="mdl-checkbox mdl-js-checkbox" for="queue_similar">
-	    <input type="checkbox" id="queue_similar" class="mdl-checkbox__input">
-	    <span class="mdl-checkbox__label">Queue similar downloads</span>
-      </label>    
-      <label class="downbox_opt mdl-checkbox mdl-js-checkbox" for="shutdown">
-	    <input type="checkbox" id="shutdown" class="mdl-checkbox__input">
-	    <span class="mdl-checkbox__label">Shutdown when finished</span>
-      </label>
-    </div>
   </div>
   <div class="mdl-card__supporting-text">
     <div id="queue">
       <table>
-        <tbody>
-        </tbody>
+
       </table>
     </div>
     <hr>
     <div id="download_ongoing">
       <table>
-        <!--
-          this is where the ongoing downloads are populated by jquery
-        --> 
-      </table>
 
-    </div>
-    <hr>
-      <div id="history">
-	<table>
-        <tbody>
-        </tbody>	
-	</table>
-      </div>
-  </div>
-  <div class="mdl-card__actions mdl-card--border">
-    <a id="show_dcctransfer" title="Enable direct file transfer" class="ic-download mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect">
-    &emsp;&emsp;Enable DFT
-    </a>
-    
-    <a id="clear_history" class="ic-history mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect">
-    &emsp;&emsp;Clear history
-    </a>
-    
-  </div>
-  <div id="downmenu" class="mdl-card__menu">
-    <button id="down_expand" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">chevron_left</i>
-    </button>
-    <button id="down_collapse" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">chevron_right</i>
-    </button>
-    <button id="close_download_box" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-      <i class="material-icons">close</i>
-    </button>
-  </div>
-</div>
-
-<!--
-
-  SEND FILE (UPLOAD)
-
--->
-
-<div id="upload_div" style="display:none;width:750px;position:fixed;left:calc(50% - 250px);top:calc(50% - 165px)" class="mdl-card mdl-shadow--2dp">
-  <div class="mdl-card__title mdl-card__title_up">
-    <span class="mdl-card__title-text">Upload box</span>
-
-  
-    </span>    
-  </div>
-
-  <div class="mdl-card__supporting-text">
-  
-<div id="sendfile_container" class="mdl-card__supporting-text">
-    <div id="receiver_nickname_div">
-	<form id="receiver_nickname">
-	  <span class="mdl-textfield mdl-js-textfield">
-	    <input class="mdl-textfield__input" type="text" id="receiver_nickname_text" placeholder="Receiver nickname">
-	    <label class="mdl-textfield__label" id="contains_submit" for="contains_text"></label>
-	  </span>
-	</form>
-	</div>
-    <div id="send_pw_div">
-	<form id="pw">
-	  <span class="mdl-textfield mdl-js-textfield">
-	    <input class="mdl-textfield__input" type="text" id="send_password_text" placeholder="Password">
-	    <label class="mdl-textfield__label" id="excludes_submit" for="contains_text"></label>
-	  </span>
-	</form>
-    </div>
-  </div>  
-    
-    
-
-        <div id="upload_ongoing" style="display: none;">
-      <table>
-	  <tr class='upload'>
-	    <td></td>
+	  <tr>
+	    <td id='opendir' class='downloadongoing'>
 	      <td></td>
 	      <td></td>
 	      <td rowspan="2"><img id='delete_pic' src='{{STATIC_URL}}ic_cancel_red.svg'></td>
@@ -312,41 +258,47 @@
 	    <td></td>
 	    <td></td>
 	    <td>
-	      <div class='upload_progressbox' style="display: none;">
-		<div class='upload_progressbar'>
-		  <span class='upload_statustxt'></span>
+	      <div id='progressbox' style="display: none;">
+		<div id='progressbar'>
+		  <span id='statustxt'></span>
 		</div>
 	      </div>
 	    </td>
 	    <!-- <td></td> -->
-	  </tr>     
+	  </tr>
+
       </table>
-    </div>  
 
-
+    </div>
+    <hr>
+      <div id="history">
+	<table>
+	</table>
+      </div>
   </div>
   <div class="mdl-card__actions mdl-card--border">
-    <a id="send_file_button" class="ic-upload mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect">
-    &emsp;&emsp;Choose file to send
+    <a id="clear_history" class="ic-history mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect">
+    &emsp;&emsp;Clear history
     </a>
-    
+    <span id="downbox_options">
+      <label class="mdl-checkbox mdl-js-checkbox" for="shutdown">
+	<input type="checkbox" id="shutdown" class="mdl-checkbox__input">
+	<span class="mdl-checkbox__label">Shutdown when finished</span>
+      </label>
+    </span>
   </div>
-
-  
-  
-  <div id="upmenu" class="mdl-card__menu">
-	<button id="info_upload" title="Direct file transfer information" style="color:#fff;" class="mdl-button mdl-js-button mdl-button--icon">
-	    <i class="material-icons">info_outline</i> 
-	</button>   
-    <button id="close_upload_box" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+  <div class="mdl-card__menu">
+    <button id="button_expand" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">chevron_left</i>
+    </button>
+    <button id="button_collapse" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">chevron_right</i>
+    </button>
+    <button id="close_download_box" style="color:#fff" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
       <i class="material-icons">close</i>
     </button>
   </div>
 </div>
-
-
-
-
 
 
 
@@ -424,7 +376,7 @@ $('#settings_button').click(function(event) {
   }
 });
 
-///this part is for the upload box
+///this first part is for the upload box
 $('#close_upload').click(function(event) {
   $("#upload_div").hide();
 });
@@ -436,56 +388,12 @@ $('#upload_button').click(function(event) {
     $("#down").hide();
     $("#about_div").hide();
     $("#settings_div").hide();
-    
   }
 });
 $('#send_file_button').click(function(event) {
-      $.ajax({
-        url: "/send_file/",
-        type: "get",
-        data: { nick : $( "#receiver_nickname_text" ).val(), pw : $( "#send_password_text" ).val() },
-
-        success: function( data ) {
-            if ( data.msg ) {
-              Upload_Monitor();
-            }
-        },
-        error: function( jqXHR, textStatus ) {
-          console.log( "path failed: " + textStatus );
-        }  
-        
-      });
+  $.get( "/send_file/", { filename : $( "#upload_filname_text" ).val(), nickname : $( "#nickname_text" ).val() }  );
 });
 
-///this part is for enabling the dcc transfer (client side)
-$('#show_dcctransfer').click(function(event) {
-  if ( $("#get_nickname_text").is(':empty') ){
-    ///get nickname and password
-      $.ajax({
-        url: "/dcctransfer_information/",
-        type: "get",
-
-        success: function( data ) {
-            $("#get_nickname_text").html(data.nick);
-            $("#get_password_text").html(data.password);            
-        },
-        error: function( jqXHR, textStatus ) {
-          console.log( "dccinfo failed: " + textStatus );
-        }  
-        
-      });
-  }
-});
-
-
-var up_content = "A few things to know about “Direct File Transfer”:\n" +
-    "First the receiver has to enable DFT in the download box. He will be provided with a randomly generated\n" +
-    "nickname and password.The sender can then use the latter in the upload box to send any file, of any size.\n" +
-    "You can receive a file from anyone and should be able to send a file to most people.\n" +
-    "In case the automatic UPnP port forwarding doesn't work, you can specify a port to be used instead.\n" +
-    "Just add the port number in the config.ini file. You'll have to open that port on your router manually.\n" +
-    "Most likely, you won't be able to send a file to someone using a public network, like a university's.\n";
-$("#info_upload").click( function(){ alert( up_content ); });
 
 var content = "The way “Quick download” works:\n" +
     "The algorithm will first make sure the file contains every word you indicated in the search box.\n" +
@@ -496,7 +404,8 @@ var content = "The way “Quick download” works:\n" +
     "For instance, should you set your priority to “Excellent”, first an excellent quality will be looked for.\n" +
     "If there is no match, the next lower quality is looked for (e.g. “Good”).\n" +
     "Eventually a normal quality is chosen, if “ts” and “cam” are kept as excluded key words.";
-$("#info_button").click( function(){ alert( content ); });
+$("#info_button").click( function(){ alert( content ) });
+
 
 
 ///second part : ABOUT
@@ -514,27 +423,49 @@ $('#about_button').click(function(event) {
 });
 
 /// now comes the rest
-var active = false,
-    history_count = 0,
-    queue_count = 0;
+var looping = true;
+var active = false;
+var resume = false;
+var queue_counter = 0;
+var Mycounter = undefined;
+var cancel = false;
+var requeued_list = [];
 Getqueue();
-Getsettings();
 if ( "{{downbox}}" !== "True" ){
   $("#down").hide();
 }
-
+Getsettings("shutdown").done(function(r) {
+  if ( r.state === true ){
+    $("#shutdown").prop('checked', true);
+  }
+});
 Gethistory();
 Getspace();
 
 $(document).ready( function () {
   if ( {{free_space}} === -1 ){
+    $('#base_folder').hide();
     $("#down").show();
     $('#download_folder').show();
   } else {
     Monitor();
   }
 });
+$('#download_folder').submit(function(event) {
+  event.preventDefault();
+  $.ajax({
+    url: "/download_path/",
+    type: "post",
+    data: { download_path : $( "#id_download_path" ).val()},
 
+    success: function( data ) {
+      $("#path_msg").html(data.msg);
+    },
+    error: function( jqXHR, textStatus ) {
+      console.log( "path failed: " + textStatus );
+    }
+  });
+});
 $('#base_folder').tooltipster({
   content: $("<span>Double click to change</span>"),
   animation: 'grow',
@@ -542,47 +473,36 @@ $('#base_folder').tooltipster({
 });
 	
 $('#base_folder').dblclick(function(event) {
-  $.ajax({
-    url: "/download_path/",
-    type: "get",
-
-    success: function( data ) {
-      if ( data.success ) {
-        $("#base_folder").html(data.success);
-        $("#no_dir").hide();
-        Getspace(false);
-      } else {
-        $("#path_msg").html(data.error);
-      }
-    },
-    error: function( jqXHR, textStatus ) {
-      console.log( "path failed: " + textStatus );
-    }
-  });
+  $('#base_folder').hide();
+  $('#download_folder').show();
 });
 
 
+function OnProgress(percentComplete)
+{
+  //Progress bar
+  $('#progressbox').show();
+  $('#progressbar').width(percentComplete+"%");
+  $('#statustxt').html(percentComplete+" %");
+
+}
 function Getsettings(what) {
   return $.ajax({
     url: "/download_settings/",
     type: "get",
+    data: { data : what },
 
     success: function( data ) {
-        if ( data.shutdown === true ){
-            $("#shutdown").prop('checked', true);
-        }        
-        if ( data.queue_similar === true ){
-            $("#queue_similar").prop('checked', true);
-        }  
+      return data.state;
     },
     error: function( jqXHR, textStatus ) {
       console.log( "get settings failed: " + textStatus );
     }
   });
-};
+}
 function Getspace(update) {
   update = typeof update !== 'undefined' ? update : false;
-  if ( active === true || update === false ) {
+  if ( active === true ) {
     $.ajax({
       url: "/space/",
       type: "get",
@@ -616,30 +536,18 @@ $('#down').on('click', '#delete_pic', function(events) {
   var self   = $(this).parent().parent(),
   pk  = self.attr('id'),
   myclass = $(this).attr('class');
-  console.log(pk);
   if ( myclass === "queue" ){
     self.remove();
-    queue_count = queue_count - 1;
     $.get( "/queue/", { pk : pk }  );
   } else if ( myclass === "history" ){
     self.remove();
-    history_count = history_count - 1;
     $.get( "/history/", { pk : pk }  );
-  } else if ( myclass === "upload" ){
-      $.get( "/cancel_upload/" );
-      $(this).parent().prev().html("Canceling...");  
   } else {
-    if ( $(this).parent().prev().html() != "Canceling..." ){
-      $.get( "/cancel_download/", { id : pk } );
-      $(this).parent().prev().html("Canceling...");
+    if ( cancel != true && $("#download_ongoing td").eq(2).html() != "Canceled" ){
+      cancel = true;
+      $.get( "/cancel_download/", { par : "cancel" } );
     }
   }
-});
-
-$('#upload_div').on('click', '#delete_pic', function(events) {
-   $.get( "/cancel_upload/" );
-  $(this).parent().prev().html("Canceling...");  
-
 });
 
 $('#down').on('click', '#opendir', function(event) {
@@ -656,15 +564,14 @@ $('#close_download_box').click(function(event) {
   $("#down").hide();
   $.post( "/download_settings/", { downbox : 0 }  );
 });
-$('#close_upload_box').click(function(event) {
-  $("#upload_div").hide();
-});
 $('#shutdown_button').click(function(event) {
+    $.get( "/cancel_download/", { par : "shutdown" } );
     window.location.replace("/shutdown_server/?par=render");
     $.get( "/shutdown_server/", { par : "shutdown" } );
   });
 
 $('#restart_button').click(function(event) {
+    $.get( "/cancel_download/", { par : "restart" } );
     window.location.replace("/restart_server/?par=render");
     $.get( "/restart_server/", { par : "restart" } );
   });
@@ -673,13 +580,6 @@ $('#shutdown').click(function(event) {
     $.post( "/download_settings/", { shutdown : 1 }  );
   } else {
     $.post( "/download_settings/", { shutdown : 0 }  );
-  }
-});
-$('#queue_similar').click(function(event) {
-  if ( $("#queue_similar").is(':checked') ){
-    $.post( "/download_settings/", { queue_similar : 1 }  );
-  } else {
-    $.post( "/download_settings/", { queue_similar : 0 }  );
   }
 });
 $('#download_box_button').click(function(event) {
@@ -693,11 +593,11 @@ $('#download_box_button').click(function(event) {
     $.post( "/download_settings/", { downbox : 1 }  );
   }
 });
-$('#down_expand').click(function(event) {
+$('#button_expand').click(function(event) {
     $('#down').css("width", "calc(100% - 64px)");
     $('#down table').css("width", "100%");
 });
-$('#down_collapse').click(function(event) {
+$('#button_collapse').click(function(event) {
     $('#down').css("width", "750px");
     Recalibrate_table();
 });
@@ -712,32 +612,33 @@ $( "#download" ).click(function(event) {
     data: { q : $( "#searchBox" ).val() },
     success: function( response ) {
       if ( response.fields ) {
-	    //download is not launched; item is added to the queue
-	    var item = [];
-	    var filename = response.fields.filename,
-	    size = response.fields.size,
-	    sizeraw = response.fields.sizeraw,
-	    network = response.fields.server,
-	    bolt_pic = "";
-	    if ( network.indexOf("criten") >= 0 ) {
-	      bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
-	    }
-	    item.push(
-	        "<tr id='" + response.pk + "' name='" + sizeraw + "'>" +
-	        "<td>" + filename + " " + bolt_pic +"</td>" +
-	        "<td>" + size + "</td>" +
-	        "<td>Queued</td>" +
-	        "<td><img id='delete_pic' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
-	        "</tr>"
-	        );
-	    $("#queue table").prepend(item);
-        Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html(), true );
-	    $('.tooltip').tooltipster();	
-	    Recalibrate_table();
+	//quickdownload is not launched because download is in progress;item is added to the queue
+	var item = [];
+	var filename = response.fields.title,
+	size = response.fields.size,
+	sizeraw = response.fields.sizeraw,
+	network = response.fields.network,
+	bolt_pic = "";
+	if ( network.indexOf("criten") >= 0 ) {
+	  bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
+	}
+	item.push(
+	    "<tr id='" + response.pk + "' name='" + sizeraw + "'>" +
+	    "<td>" + filename + " " + bolt_pic +"</td>" +
+	    "<td>" + size + "</td>" +
+	    "<td>Queued</td>" +
+	    "<td><img id='delete_pic' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
+	    "</tr>"
+	    );
+	$("#queue table").prepend(item);
+    Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html(), true );
+	$('.tooltip').tooltipster();	
+	Recalibrate_table();
+	cancel = false;
       } else {
-	    if ( response.redirect ) {
-	      window.location.replace("/search/?q=" + response.q + "&noquick=True");
-	    }
+	if ( response.redirect ) {
+	  window.location.replace("/search/?q=" + response.q + "&noquick=True");
+	}
       }
     }
   });
@@ -774,21 +675,19 @@ function Getqueue() {
 
     success: function( data ) {
       if ( data.length > 0 ) {
-    $("#queue table tbody").remove(); 
-    queue_count = data.length; 
 	var items = [];
 	for (i = 0; i < data.length; i++){
-	  var filename = data[i].fields.filename,
+	  var filename = data[i].fields.title,
 	    size = data[i].fields.size,
 	    sizeraw = data[i].fields.sizeraw,
-	    network = data[i].fields.server,
+	    network = data[i].fields.network,
 	    bolt_pic = "";
 	  if ( network.indexOf("criten") >= 0 ) {
 	    bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
 	  }
 	  items.push(
-	      "<tr id='" + data[i].pk + "' name='" + filename + "'>" +
-	      "<td>" + filename + bolt_pic +"</td>" +
+	      "<tr id='" + data[i].pk + "' name='" + sizeraw + "'>" +
+	      "<td>" + filename + " " + bolt_pic +"</td>" +
 	      "<td>" + size + "</td>" +
 	      "<td>Queued</td>" +
 	      "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
@@ -860,8 +759,6 @@ function Gethistory() {
 
     success: function( data ) {
       if ( data.length > 0 ) {
-        history_count = data.length;
-        $("#history table tbody").remove();  
 	for (i = 0; i < data.length; i++){
 	  var item = [];
 	  var filename = data[i].fields.filename,
@@ -899,7 +796,9 @@ function Gethistory() {
   });
 
 };
-
+function Queue_Counter() {
+  queue_counter = queue_counter + 1;
+}
 function Blink(){
   $("#nospacediv").show();
   $("#space_warning").show();
@@ -909,149 +808,192 @@ function Blink(){
         $("#space_warning").css("opacity", "1");
       }, 200);
     }, 1000);
-};
+}
 
-function OnProgress(percentComplete, element_number, type)
-{
-  type = typeof type !== 'undefined' ? type : "download";
-  if ( type === "download" ) {
-    //Progress bar
-    $("#download_ongoing td:eq("+element_number+") .progressbox").show();
-    $("#download_ongoing td:eq("+element_number+") .progressbar").width(percentComplete+"%");
-    $("#download_ongoing td:eq("+element_number+") .statustxt").html(percentComplete+" %");
-  } else {
-    $('.upload_progressbox').show();
-    $('.upload_progressbar').width(percentComplete+"%");
-    $('.upload_statustxt').html(percentComplete+" %");
-  }   
 
-};
+function Monitor() {
 
-function Upload_Monitor() {
+  if ( looping === true ) {
     $.ajax({
-      url: "/upload_monitor/",
+      url: "/monitor/",
       type: "get",
 
       success: function( response ) {
 	if ( response.fields ){
-      $( "#sendfile_container" ).hide();
-      $( "#upload_ongoing" ).show();
-	  $("#upload_ongoing td").eq(0).html(response.fields.filename);
-      Add_tooltip( $("#upload_ongoing tr:first-child td:first-child"), $("#upload_ongoing tr:first-child td:first-child").html(), true );
+	  $("#download_ongoing td").eq(0).html(response.fields.filename);
+      Add_tooltip( $("#download_ongoing tr:first-child td:first-child"), $("#download_ongoing tr:first-child td:first-child").html(), true );
       $('.tooltip').tooltipster();	
-	  $("#upload_ongoing td").eq(1).html(response.fields.size);
-	  $("#upload_ongoing td").eq(2).html(response.fields.status);
+	  $("#download_ongoing td").eq(1).html(response.fields.size);
+	  if ($('#download_ongoing td').find('#queue_warning').length > 0) {
+	    $("#download_ongoing td").eq(2).html(response.fields.status);
+          $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+          var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+          Add_tooltip( $("#download_ongoing td").eq(2), content );
+          $('.tooltip').tooltipster();	
+	  } else {
+	    $("#download_ongoing td").eq(2).html(response.fields.status);
+	  }
 	  sz = response.fields.completed + " of " + response.fields.size;
 	  eta = response.fields.eta;
 	  est = response.fields.timeleft;
-	  $("#upload_ongoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
-	  $("#upload_ongoing td").eq(5).html(Testnull(response.fields.speed, "speed"));
-  	  if ( response.fields.status === "Uploading..." ){
-	    OnProgress(response.fields.progress, 0, "upload");
+	  $("#download_ongoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
+	  $("#download_ongoing td").eq(5).html(Testnull(response.fields.speed, "speed"));
+	  active = response.fields.active;
+	  //if ( Testnull(response.fields.progress) != "" ){
+	  if ( response.fields.status === "Downloading..." ){
+	    OnProgress(response.fields.progress);
       } else {
-        $('#upload_progressbox').hide();
+        $('#progressbox').hide();
 	  }
-	} else {}
-	}
-	  
-    });
-    setTimeout(Upload_Monitor, 1000);
-};	  
+	  //8 = empty
 
-function Monitor() {
-    $.ajax({
-        url: "/monitor/",
-        type: "get",
-        data: { history_count : history_count, queue_count : queue_count },
-
-        success: function( response ) {
-            ///first we have to check the html table for ongoing downloads
-            ///add or remove elements until correct number is reached
-            if ( response ){
-                if ( response[1].fields ){
-                    if ( $.inArray("update_elements", response) !== -1 ){
-                        ///update history & queue
-                        Getqueue();
-                        Gethistory();
-                    }
-                    var tr_number = $('#download_ongoing table tbody').children('tr').length/2;
-                    if ( response[0] !== tr_number ) {
-                        if ( response[0] > tr_number ) {
-                            ///need to add some trs for new ongoing downloads
-                            for (i = 0; i < (response[0] - tr_number); i++){
-                                var new_tr = [];
-                                new_tr.push(
-                                    "<tr class='mainrow'>" + 
-                                    "<td><td><td><td rowspan='2'><img id='delete_pic' src='{{STATIC_URL}}ic_cancel_red.svg'></td>" + 
-                                    "</tr>" +
-                                    "<tr><td><td><td>"+
-                                    "<div class='progressbox' style='display: none;'>"+
-                                    "<div class='progressbar'>"+
-                                    "<span class='statustxt'></span>"+
-                                    "</div></div></td></tr>"
-                                );            
-                                $('#download_ongoing table').prepend(new_tr);
-                            }
-                        } else {
-                            ///too many trs, need to remove the inactive downloads
-                            ///add trs again if some downloads were replaced ?                               
-                            var down_list = [];
-                            for (i = 1; i < response[1].fields + 1; i++){
-                                down_list.push(response[i].fields.id);
-                            }
-                            $('#download_ongoing table tr').each(function () {
-                                if ( $(this).hasClass("mainrow") ){
-                                    if ( $.inArray($(this).attr('id'), down_list) === -1 && response[0] !== tr_number ){
-                                        ///displayed download id is not in down_list, remove elements if more than necessary
-                                        $(this).next().remove();
-                                        $(this).remove();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                    ///now the table is built
-                    ///we can proceed and populate it with data
-                    for (i = 0; i < response[0]; i++){
-                        $('#download_ongoing tr').eq(2*i).attr("id", response[i+1].fields.id);
-                        $("#download_ongoing td").eq(7*i).html(response[i+1].fields.filename);          
-                        Add_tooltip( $("#download_ongoing tr:first-child td:first-child"),
-                        $("#download_ongoing tr:first-child td:first-child").html(), true );
-                        $('.tooltip').tooltipster();	
-                        $("#download_ongoing td").eq(7*i+1).html(response[i+1].fields.size);
-                        $("#download_ongoing td").eq(7*i+2).html(response[i+1].fields.status);
-                        sz = response[i+1].fields.completed + " of " + response[i+1].fields.size;
-                        eta = response[i+1].fields.eta;
-                        est = response[i+1].fields.timeleft;
-                        if ( response[i+1].fields.filename.indexOf("file transfer") >= 0 ){
-                            ///direct file transfer
-                            if ( $("#download_ongoing td").eq(7*i+4).is(':empty') ) {
-                                $("#download_ongoing td").eq(7*i+4).html("Nickname & pw: " + "<a style='color:#03a9f4'>" + 
-                                    $("#get_nickname_text").html() + "</a> | <a style='color:#03a9f4'>" + $("#get_password_text").html() + "</a>");
-                            }
-                        } else {
-                            $("#download_ongoing td").eq(7*i+4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
-                        }                        
-                        $("#download_ongoing td").eq(7*i+5).html(Testnull(response[i+1].fields.speed, "speed"));
-                        active = response[i+1].fields.active;
-                        if ( response[i+1].fields.status === "Downloading..." ){
-                            OnProgress(response[i+1].fields.progress, 7*i+6);
-                        } else {
-                            $("#download_ongoing td:eq("+(7*i+6)+") .progressbox").hide();
-                        }
-                    }
+	  if ( response.fields.status.indexOf("queue") >= 0 ){
+	    if ( queue_counter === 0 ){
+	      Mycounter = setInterval( Queue_Counter, 1000);
+	    } else {
+	      if ( queue_counter >= 30 ){
+	        clearInterval(Mycounter);
+	        queue_counter = 0;
+	        if ( requeued_list.indexOf(response.fields.filename) >= 0 ){
+	            //in this case, the item has already been requeued once, so either stay with it, or remove it if shutdown option is ON
+	            if ( $("#shutdown").is(':checked') ){
+	                $.get( "/cancel_download/", { par : "cancel" } );
+                } else {
+		            if ($('#download_ongoing td').find('#queue_warning').length <= 0) {
+		              //stay in queue, but display a warning that this may take quite a while
+                      $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+                      Add_tooltip( $("#download_ongoing td").eq(2), content );
+                      $('.tooltip').tooltipster();	
+		            }
                 }
             } else {
-                ///here the response is None, meaning there is no more download ongoing
-                $('#download_ongoing table tbody').remove();
-            }        
-        },    
-        error: function( jqXHR, textStatus ) {
-            console.log( "Monitor failed: " + textStatus );
+                //in this case, the item is in queue for 30 seconds for the first time
+	            if ($('#queue table').children().length > 0 ){
+		        //move the item to the end of the queue and start next download
+		        $.ajax({
+		          url: "/cancel_download/",
+		          type: "get",
+		          data: { queuing : true},
+
+		          success: function( response ) {
+		            if ( response.fields ) {
+		              var item = [];
+		              var filename = response.fields.title,
+		                size = response.fields.size,
+		                sizeraw = response.fields.sizeraw,
+		                network = response.fields.network,
+		                bolt_pic = "";
+		              if ( network.indexOf("criten") >= 0 ) {
+			            bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
+		              }
+		              item.push(
+			            "<tr id='" + response.pk + "' name='" + sizeraw + "'>" +
+			            "<td>" + filename + " " + bolt_pic +"</td>" +
+			            "<td>" + size + "</td>" +
+			            "<td>Queued</td>" +
+			            "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
+			            "</tr>"
+			          );
+		              $("#queue table").prepend(item);
+		              Add_tooltip( $("#queue table tr:first-child td:first-child"), $("#queue table tr:first-child td:first-child").html(), true );
+	                  $('.tooltip').tooltipster();	
+		              requeued_list.push(filename);
+		            }
+		          },
+		          error: function( jqXHR, textStatus ) {
+		            console.log( "Prepend queue failed: " + textStatus );
+		          }
+		        });
+	            } else {
+		          if ($('#download_ongoing td').find('#queue_warning').length <= 0) {
+		            //stay in queue, but display a warning that this may take quite a while
+                      $('#download_ongoing td').eq(2).append("<img id='queue_warning' src='{{STATIC_URL}}ic_warning_red.svg' height='18px'>");
+                      var content = "It may take quite a while to receive<br>the package at this point;<br>It is recommended to try another package<br>if available to avoid waiting.";
+                      Add_tooltip( $("#download_ongoing td").eq(2), content );
+                      $('.tooltip').tooltipster();	
+		          }
+	            }
+	        }
+	      }
+	    }
+      }
+
+	  if ( response.fields.active === false ){
+	    if ( response.fields.status === "Error during file transfer" && response.fields.attempts < 5){
+	      $.get( "/queue_download/", { resume : true }  );
+	    } else {
+          if ($('#queue table').children().length > 0 ){
+		    var space = 0;
+		    Getspace(true).done(function(r) {
+                if (r) {
+                  space = r.space;
+                  if ( space*1024 <= $("#queue tr").last().attr('name')/1024/1024 ) {
+                    //do not proceed with download until harddrive space has been made
+                    if ( $("#shutdown").is(':checked') ){ $.get( "/shutdown/" ); }
+                    looping=false;
+                    Blink();
+                  } else {
+                    var pk = $("#queue tr").last().attr('id');
+                    $.ajax({
+                      url: "/queue_download/",
+                      type: "get",
+                      data: { pk : pk },
+
+                      success: function( response ) {
+                         cancel = false;
+                      },
+
+                      error: function( jqXHR, textStatus ) {
+                        console.log( "update history failed: " + textStatus );
+                      }
+                    });
+                    $("#queue tr").last().remove();
+                  }
+                }
+                });
+            } else {
+              if ( $("#shutdown").is(':checked') ){ $.get( "/shutdown/" ); }
+            }
+          }
+        } else {
+        //if status is "Interrupted", then resume;
+          if ( response.fields.status === "Interrupted" && resume === false ){
+            $.get( "/queue_download/", { resume : true }  );
+            resume = true;
+          }
         }
-    });
-    setTimeout(Monitor, 1000);
-    Recalibrate_table();
+      } else {
+        if ( active === false && response === "" ){
+          if ($('#queue table').children().length > 0 ){
+            var space = 0;
+            Getspace(true).done(function(r) {
+	          if (r) {
+	            space = r.space;
+	            if ( space*1024 <= $("#queue tr").last().attr('name')/1024/1024 ) {
+	              //do not proceed with download until harddrive space has been made
+	              looping=false;
+	              $("#nospacediv").show();
+	            } else {
+	              var pk = $("#queue tr").last().attr('id');
+	              $.get( "/queue_download/", { pk : pk }  );
+	              $("#queue tr").last().remove();
+	            }
+	          }
+	        });
+          }
+        }
+      }
+      setTimeout(Monitor, 1000);
+    },
+    error: function( jqXHR, textStatus ) {
+      console.log( "Monitor failed: " + textStatus );
+      setTimeout(Monitor, 1000);
+    }
+  });
+  Recalibrate_table();
+
+}
 };
 
 </script>

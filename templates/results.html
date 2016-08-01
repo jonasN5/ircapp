@@ -86,7 +86,6 @@
             $('[id^="firstpage"]').click(function() { window.location.replace(Pageurl("first")) });
 
             $(document).ready( function () {
-                    //interval = setInterval(Monitor, 1000);
                 $("#searchBox").val("{{q}}");
                 var table = document.getElementById("query");
                 if ( table ) {
@@ -114,12 +113,12 @@
                             data : { data : info[0] + ',' + info[1] + ',' + info[2] + ',' +  info[3] + ',' + info[4], filename : q },
                             success: function( response ) {
                                 if ( response.fields ) {
-                                    //download is not launched because download is in progress; item is added to the queue
+                                    //download is not launched; item is added to the queue
                                   var item = [];
-	                              var filename = response.fields.title,
+	                              var filename = response.fields.filename,
 	                                size = response.fields.size,
 	                                sizeraw = response.fields.sizeraw,
-	                                network = response.fields.network,
+	                                network = response.fields.server,
 	                                bolt_pic = "";
 	                              if ( network.indexOf("criten") >= 0 ) {
 		                            bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
