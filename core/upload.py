@@ -10,8 +10,8 @@ import requests
 import threading
 import time
 import datetime
-from ircapp.logs import log
-from ircapp.models import *
+from core.logs import log
+from core.models import *
 import random, string
 from django.utils.timezone import now as utcnow
 from jaraco.stream import buffer

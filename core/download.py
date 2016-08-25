@@ -20,17 +20,50 @@ else:
     import rarfile
 import shutil
 import datetime
-from ircapp.logs import directory, log
-from ircapp.models import *
+from core.logs import directory, log
+from core.models import *
 import views
 import random, string
 from django.utils.timezone import now as utcnow
 import subprocess
 import cherrypy
+from jaraco.stream import buffer
 
 from multiprocessing import Queue
 import main
 
+class ModifiedReactor(irc.client.Reactor):
+    def server(self):
+        """Creates and returns a ServerConnection object."""
+
+        c = MServerConnection(self)
+        with self.mutex:
+            self.connections.append(c)
+        return c
+        
+        
+class MServerConnection(irc.client.ServerConnection):
+    def process_data(self):
+        "read and process input from self.socket"
+
+        try:
+            reader = getattr(self.socket, 'read', self.socket.recv)
+            new_data = reader(2 ** 14)
+        except socket.error:
+            # The server hung up.
+            self.disconnect("Connection reset by peer")
+            return
+        if not new_data:
+            # Read nothing: connection must be down.
+            self.disconnect("Connection reset by peer")
+            return
+
+        self.buffer.feed(new_data)
+
+        # process each non-empty line after logging all lines
+        for line in self.buffer:
+            if not line: continue
+            self._process_line(line)
 
 #these are the two global variables that will store History and Download_ongoing objects
 def monitoring(self, connection, bot, position=0):
@@ -65,7 +98,7 @@ def monitoring(self, connection, bot, position=0):
 
     
 class DCCReceive(irc.client.SimpleIRCClient):
-
+    reactor_class = ModifiedReactor
     def __init__(self, direct=False, **kwargs):
         irc.client.SimpleIRCClient.__init__(self)
         """
@@ -119,7 +152,7 @@ class DCCReceive(irc.client.SimpleIRCClient):
                     del botqueue
                     self.dict[bot]["down"].delete()
                     return
-                connection.privmsg(bot, "xdcc cancel")                       
+                #connection.privmsg(bot, "xdcc cancel")                       
                 self.dict[bot]["cancel"] = True
                 try:
                     self.DCCconnections_dict[bot].disconnect()
@@ -131,20 +164,23 @@ class DCCReceive(irc.client.SimpleIRCClient):
                 if mylist[0] == "queue_item":
                     connection.privmsg(bot, "xdcc send #%s" % mylist[3])
                     log("New package requested").write()
-                    self.dict[bot]["filename"], self.dict[bot]["size"] = mylist[1], mylist[2]
+                    hist = Download_History(filename=mylist[1], sizeraw=mylist[2]) 
+                    self.dict[bot]["filename"], self.dict[bot]["size"], self.dict[bot]["received_bytes"] = mylist[1], mylist[2], 0
                     (self.dict[bot]["down"].status, self.dict[bot]["down"].progress, self.dict[bot]["down"].completed, 
-                        self.dict[bot]["down"].eta, self.dict[bot]["down"].timeleft)= 'New package requested', 0, 0, None, None                    
+                        self.dict[bot]["down"].eta, self.dict[bot]["down"].timeleft, self.dict[bot]["down"].active)= 'New package requested', 0, 0, None, None, True                    
                     self.dict[bot]["down"].filename, self.dict[bot]["down"].sizeraw, self.dict[bot]["down"].package_number = (
                         mylist[1], mylist[2], mylist[3])
                     self.dict[bot]["down"].save()
+                    self.dict[bot]["hist"] = hist
                 else:
+                    main.queuedict[connection.server+mylist[1]] = Queue()
                     #remaining case : the bot has to join another channel of this server
                     #since we're about to open a new DCCconnection, create new download object
                     down = Download_Ongoing(filename=mylist[3], status="Requesting package...", active=True,
-                        server=self.dict[bot]["down"].server, channel=mylist[0], username=mylist[1], package_number=mylist[0], sizeraw=mylist[4])
+                        server=self.dict[bot]["down"].server, channel=mylist[0], username=mylist[1], package_number=mylist[2], sizeraw=mylist[4])
                     hist = Download_History(filename=mylist[3], sizeraw=mylist[4])   
                     down.save()
-                    bot = mylist[1]
+                    bot = self.bot = mylist[1]
                     data = {
                         "received_bytes" : 0,
                         "cancel" : False,
@@ -158,6 +194,8 @@ class DCCReceive(irc.client.SimpleIRCClient):
                     self.dict[bot] = data                  
                     connection.join(mylist[0])
                     connection.privmsg(mylist[1], "xdcc send #%s" % mylist[2])
+                    if "moviegods" in mylist[0]:
+                        connection.join("#MG-CHAT")                    
                     log("Channel joined (%s) and package requested" % mylist[0]).write()
                     self.on_welcome(connection, event, first=False)                
 
@@ -166,17 +204,12 @@ class DCCReceive(irc.client.SimpleIRCClient):
     def retry_pack(self, connection, bot):
         while connection.connected and self.dict[bot]["down"]:
             try:
-                print("bot listening on %s.Filename=%s. id=%d. Connection:%s" % (connection.server,
-                    self.dict[bot]["down"].filename, self.dict[bot]["down"].id, connection.connected))
+                print("nick: %s file: %s id: %d" % (bot,
+                    self.dict[bot]["down"].filename, self.dict[bot]["down"].id))
                 time.sleep(3)
-            except:
-                pass
-        """
-        if self.received_bytes == 0:
-            if connection.connected:
-                connection.privmsg(self.bot, self.msg)
-                log("Package requested again").write()
-        """
+            except Exception as e:
+                print (e)
+
 
     def on_welcome(self, connection, event, first=True):
         if self.direct:
@@ -194,8 +227,8 @@ class DCCReceive(irc.client.SimpleIRCClient):
         if first and not self.direct:      
             connection.join(self.dict[self.bot]["channel"])
             #must join mg-chat channel to download on moviegods
-            if "#moviegods" in self.dict[self.bot]["channel"]:
-                connection.join("#mg-chat")
+            if "moviegods" in self.dict[self.bot]["channel"]:
+                connection.join("#MG-CHAT")
                 log("Channel #mg-chat joined to be able to download").write()
             connection.privmsg(self.bot, self.dict[self.bot]["msg"])
             log("Channel joined (%s) and package requested" % self.dict[self.bot]["channel"]).write()
@@ -238,6 +271,12 @@ class DCCReceive(irc.client.SimpleIRCClient):
                         c.ctcp("CHAT", e.source.nick, "wrong password")
                         proceed = False                
                 if proceed:
+                    if '"' in e.arguments[1]:
+                        #remove spaces from filename
+                        one = e.arguments[1].find('"')
+                        two = e.arguments[1].find('"', one + 1)
+                        new = e.arguments[1][one+1:two].replace(" ", ".")
+                        e.arguments[1] = e.arguments[1][:one] + new + e.arguments[1][two+1:]     
                     self.dict[bot]["filename"] = e.arguments[1].split(" ")[1]
                     self.port = int(e.arguments[1].split(" ")[3])
                     self.ip = irc.client.ip_numstr_to_quad(e.arguments[1].split(" ")[2])
@@ -283,7 +322,7 @@ class DCCReceive(irc.client.SimpleIRCClient):
         self.dict[bot]["down"].save()
         t = threading.Timer(0, monitoring, [self, connection, bot, int(self.dict[bot]["position"])])
         t.start()
-        s=threading.Timer(0, self.retry_pack, [c, bot])
+        s=threading.Timer(0, self.retry_pack, [connection, bot])
         s.daemon=True
         s.start()
 

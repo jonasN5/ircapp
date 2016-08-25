@@ -1,5 +1,5 @@
 from django import forms
-from ircapp.models import Download_Path, Download_Ongoing, Quick_Download
+from core.models import Download_Path, Download_Ongoing, Quick_Download
 from django.utils.translation import ugettext_lazy as u_
 import os
 

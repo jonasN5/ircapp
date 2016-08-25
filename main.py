@@ -11,10 +11,10 @@ from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
-from ircapp.models import *
-from ircapp.download import *
-from ircapp.forms import *
-from ircapp.logs import *
+from core.models import *
+from core.download import *
+from core.forms import *
+from core.logs import *
 import views
 queuedict = {}
 
@@ -108,6 +108,7 @@ def start_ircapp():
         Download_Settings().save()
     finally:
         Upload_Ongoing.objects.all().delete()
+        checklist=[]
         if Download_Ongoing.objects.all().count() > 0:        
             if not Download_Ongoing.objects.filter(active=True):
                 Download_Ongoing.objects.all().delete()
@@ -119,10 +120,10 @@ def start_ircapp():
                     else:
                         down_obj.status,  down_obj.speed, down_obj.eta, down_obj.tm = "Interrupted", None, None, None
                         down_obj.save()
+                        checklist.append(down_obj.server)
                         views.initial_download(down_obj)
         #in case there is a queue, let's check and launch
         if Download_Queue.objects.all().count() > 0:
-            checklist=[]
             for queue_obj in Download_Queue.objects.all():
                 if not queue_obj.server in checklist:
                     views.initial_download(queue_obj, what="queue")
@@ -132,7 +133,8 @@ def start_ircapp():
         if Quick_Download.objects.all().count() == 0:
             Quick_Download().save()
         if Quick_Download_Excludes.objects.all().count() == 0:        
-            Quick_Download_Excludes(excludes="ts").save()
+            Quick_Download_Excludes(excludes="hdts").save()
+            Quick_Download_Excludes(excludes="hd-ts").save()
             Quick_Download_Excludes(excludes="cam").save()
 
     

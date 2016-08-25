@@ -1,7 +1,7 @@
 import datetime
 from django.utils.translation import ugettext as _
 import os, sys
-from ircapp.models import Download_Path
+from core.models import Download_Path
 
 def directory():
     if Download_Path.objects.all().count() == 0:

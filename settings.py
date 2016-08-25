@@ -11,7 +11,7 @@ sys.path.append(os.path.join(BASE_DIR, 'ircapp'))
 
 SECRET_KEY = '!8gd%24y2x#6t^npsij&+)*pc^%jyzh=np%cr5e6#78l6xdv3w'
 #keep debug true while beta testing
-DEBUG = False
+DEBUG = True
 USE_I18N = False
 USE_TZ = True
 #DATETIME_FORMAT = 'N jS, P'
@@ -25,16 +25,15 @@ except:
     
 ROOT_URLCONF = 'urls'
 ALLOWED_HOSTS = ['localhost']
-ADMINS = ["ircappwebmaster@gmail.com"]
 INSTALLED_APPS = (
     'django.contrib.staticfiles',
-    'ircapp',
+    'core',
 )
 MIDDLEWARE_CLASSES = ()
 if sys.platform == "win32":
-    my_database = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "db.sqlite3")
+    my_database = os.path.join(os.environ["LOCALAPPDATA"], "IRCapp", "IRCapp_2.0.sqlite3")
 else:
-    my_database = os.path.abspath(os.path.join(os.path.expanduser("~"), ".IRCapp", "db.sqlite3"))
+    my_database = os.path.abspath(os.path.join(os.path.expanduser("~"), ".IRCapp", "IRCapp_2.0.sqlite3"))
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -76,9 +75,9 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR,'ircapp', 'static'),
+    os.path.join(BASE_DIR,'core', 'static'),
 )  
-STATIC_ROOT = os.path.join(BASE_DIR,'ircapp', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR,'core', 'static')
 
 
 

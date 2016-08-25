@@ -9,41 +9,20 @@ Download at : <https://sourceforge.net/projects/ircapp/files/>
 Simply download and execute the setup.exe file
 
 ##Unix
-There are currently two .deb files available.
-
-*   FULL Version :  
-    Use this version if you do not program python and didn't install any of the following packages (this is the dependency list):      
-    
-    *   irc
-    *   requests
-    *   cherrypy
-    *   django 1.8.5
-    *   pytz
-    *   rarfile
-    *   miniupnpc
-    *   unrar
-    *   tk
-    
-    If you have these packages, there might be an error during the installation (file overwrite).
-    Install with:          
-    
-        sudo dpkg -i IRCapp_2.0_full.deb
-
-*   MIN Version :  
-    Use this version in any other case. To install, run:         
+*   To install, run:         
      
-        sudo apt-get install python3-pip python3-tk
+        sudo apt-get install python3-pip python3-tk unrar
         sudo pip3 install django==1.8.5 irc requests cherrypy pytz miniupnpc
-        sudo dpkg -i IRCapp_2.0_min.deb
+        sudo dpkg -i IRCapp_2.0.deb
 *   In case you choose to clone the source code, for instance if you implement a server, you should run :
 
-        sudo apt-get install unrar python3-tk       
+        sudo apt-get install python3-pip python3-tk unrar       
         sudo pip3 install django==1.8.5 irc requests cherrypy pytz rarfile miniupnpc
 ##OSX
 I'm currently trying to get a Mac and will create a Mac distribution ASAP !
 
 ##Contact
-ircappwebmaster@gmail.com
+https://github.com/themadmrj/ircapp/issues
 
 ###To do's  
 A few major things still need to be done:  

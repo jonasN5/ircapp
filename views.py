@@ -1,9 +1,9 @@
-from ircapp.logs import directory, log
-from ircapp.upload import upload_file
-from ircapp.models import *
-from ircapp.forms import *
+from core.logs import directory, log
+from core.upload import upload_file
+from core.models import *
+from core.forms import *
 import main
-import ircapp.download
+import core.download
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -23,8 +23,6 @@ import tkinter as tk
 from tkinter.ttk import *
 from tkinter import filedialog
 import random, string
-
-
 
 
        
@@ -126,10 +124,10 @@ def search_download(request, data={}):
                     #same server exists but different channel : signal bot to join new channel and request package
                     #provide filename and size for GUI purpose
                     botqueue = main.queuedict[server+download_ongoing.username]
-                    botqueue.put(channel+","+xdccbot+","+xdccrequest+","+filename+","+sizeraw)
-                    return
+                    botqueue.put(channel+","+xdccbot+","+str(xdccrequest)+","+filename+","+str(sizeraw))
+                    return HttpResponse("")
     #no download in progress or download in progress on another server : launch new bot with download
-    ircapp.download.xdcc(filename=filename, size=sizeraw, server=server, 
+    core.download.xdcc(filename=filename, size=sizeraw, server=server, 
         channel=channel, username=xdccbot, package_number=xdccrequest)    
     #hist = prepare(Download_History.objects.latest("id"))
     #hist["type"] = "history"
@@ -152,7 +150,12 @@ def manage_queue(down_ongoing):
         if Download_Queue.objects.filter(server=down_ongoing.server):
             #queue exists for this server, channel & bot, request next package
             queue_obj = Download_Queue.objects.filter(server=down_ongoing.server).order_by("id")[0]
-            botqueue.put("queue_item,"+queue_obj.filename+","+str(queue_obj.sizeraw)+","+str(queue_obj.package_number))
+            if queue_obj.username == down_ongoing.username:
+                botqueue.put("queue_item,"+queue_obj.filename+","+str(queue_obj.sizeraw)+","+str(queue_obj.package_number))
+            else:
+                del main.queuedict[down_ongoing.server+down_ongoing.username]
+                down_ongoing.delete()
+                botqueue.put(queue_obj.channel+","+queue_obj.username+","+str(queue_obj.package_number)+","+queue_obj.filename+","+str(queue_obj.sizeraw))                
             #download_ongoing item is maintained and data is replaced by new package info
             #queue item has to be deleted
             queue_obj.delete()  
@@ -177,10 +180,10 @@ def initial_download(obj, what="resume"):
     internal purpose only, not a view
     """
     if what != "resume":
-        ircapp.download.xdcc(filename=obj.filename, size=obj.sizeraw, server=obj.server, 
+        core.download.xdcc(filename=obj.filename, size=obj.sizeraw, server=obj.server, 
             channel=obj.channel, username=obj.username, package_number=obj.package_number)
     else:          
-        ircapp.download.xdcc(filename=obj.filename, size=obj.sizeraw, server=obj.server, 
+        core.download.xdcc(filename=obj.filename, size=obj.sizeraw, server=obj.server, 
             channel=obj.channel, username=obj.username, package_number=obj.package_number, down_obj=obj, resume=True)    
     
     
@@ -375,6 +378,7 @@ def quickinfo(querystring):
             for element in query:
                 if not element in x["name"].lower():
                     test = False
+                    print (element, x["name"].lower())
             if Quick_Download_Contains.objects.all().count() > 0:
                 for obj in Quick_Download_Contains.objects.all():
                     if not str(obj.contains).lower() in x["name"].lower():
@@ -383,16 +387,17 @@ def quickinfo(querystring):
                 for obj in Quick_Download_Excludes.objects.all():
                     if str(obj.excludes).lower() in x["name"].lower():
                         test = False
+                       
             #first loop through all the keywords
-            print ("this is the time")
-            print (x)
             for word in quality_words[quality_index:]:
                 #for each key word, loop through all the elements to find a match before doing the same for the next keyword
                 if word in x["name"].lower():
-                    #also, if word is "hd", exclude other words since x["name"] might be like "720p.HDTV"
-                    for otherword in quality_words[:quality_index]:
-                        if otherword in x["name"].lower():
-                            test = False
+                    if word == "hd":
+                        #also, if word is "hd", exclude other words since x["name"] might be like "720p.HDTV"
+                        for otherword in quality_words[:quality_index]:
+                            if otherword in x["name"].lower():
+                                test = False
+
                 else:
                     test = False
             if test and testresult(x):
@@ -522,11 +527,17 @@ def download_path(request):
             msg = u_('Cannot change the download directory while downloading. Please wait for your download to finish.')
             return JsonResponse({ 'error' : msg, }, safe=False)
     root = tk.Tk()
+    root.attributes('-topmost', True)
     root.withdraw()
-    path = filedialog.askdirectory()  
+    path = filedialog.askdirectory()
     if not path:
-        return HttpResponse("") 
-    new_path = Download_Path(download_path=path).save()
+        return HttpResponse("")
+    if Download_Path.objects.all().count() > 0:
+        obj = Download_Path.objects.latest('id')
+        obj.download_path = path
+        obj.save()
+    else:
+        new_path = Download_Path(download_path=path).save()
     root.destroy()
     return JsonResponse({ 'success' : path, }, safe=False)
 
@@ -578,7 +589,7 @@ upload and download
 def dcctransfer_information(request):
     nick = ''.join(random.choice(string.ascii_lowercase) for i in range(10))
     pw = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(12))
-    ircapp.download.xdcc(nick=nick, pw=pw)
+    core.download.xdcc(nick=nick, pw=pw)
     return JsonResponse({ 'nick' : nick, 'password' : pw }, safe=False)
 
 #send file feature
@@ -586,6 +597,7 @@ def send_file(request):
     nickname = request.GET['nick']
     password = request.GET['pw']
     root = tk.Tk()
+    root.attributes('-topmost', True)
     root.withdraw()
     path = filedialog.askopenfilename() 
     if not path:
@@ -729,6 +741,8 @@ def cancel_download(request):
     print ("cancel pressed")
     down = Download_Ongoing.objects.get(pk=request.GET['id'])
     print ("down that should be canceled is : %s %s" % (down.server, down.username))
+    down.active = False
+    down.save()
     botqueue = main.queuedict[down.server+down.username]
     botqueue.put("cancel") 
     return HttpResponse("canceled")

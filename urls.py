@@ -4,7 +4,7 @@ from django.views.generic.base import RedirectView
 
 
 urlpatterns = patterns('',
-    url(r'^favicon.ico$', RedirectView.as_view(url='/ircapp/static/favicon.ico', permanent=False),name="favicon"),  
+    url(r'^favicon.ico$', RedirectView.as_view(url='/core/static/favicon.ico', permanent=False),name="favicon"),  
     url(r'^$', views.index, name='index'), #search.html
     url(r'^quick_download/$', views.quick_download, name='quick_download'), #quick download button
     url(r'^send_file/$', views.send_file, name='send_file'), #send a file button
