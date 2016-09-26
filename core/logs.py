@@ -2,13 +2,21 @@ import datetime
 from django.utils.translation import ugettext as _
 import os, sys
 from core.models import Download_Path
+import settings
 
 def directory():
     if Download_Path.objects.all().count() == 0:
         #temporary solution to get download path for english, german and french speaking users to avoid third party dependancy
         default = os.path.join(os.path.expanduser('~'), _('Downloads'))
         if not os.path.exists(default):
-            default = os.path.join(os.path.expanduser('~'), _('Téléchargements'))
+            default = os.path.join(os.path.expanduser('~'), 'Téléchargements')  
+        #config.ini file has priority
+        with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:
+            content = cfg.readlines()
+            path = content[4][1+content[4].index("="):content[4].index("#")].strip(" ")
+            cfg.close()
+        if path:
+            default = path
         if os.path.exists(default):
             Download_Path(download_path=default).save()
             return Download_Path.objects.latest('id').download_path

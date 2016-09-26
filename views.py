@@ -551,16 +551,16 @@ def splitext(path):
     return os.path.splitext(path)
 
 def opendir(request):
-    pk = int(request.GET['pk'])
-    try:
-        basefolder = Download_Path.objects.latest('id').download_path
+    pk, myclass = int(request.GET['pk']), request.GET['myclass']
+    if directory():
+        basefolder = directory()
         foldername = basefolder
-        if pk != 0:
+        if myclass == "history":
             fileobject = Download_History.objects.get(pk=pk)
             if "extracted" in fileobject.status and ".tar" in splitext(fileobject.filename)[1]:
-                foldername = os.path.join(basefolder, splitext(fileobject.filename)[0])
+                foldername = os.path.join(basefolder, splitext(fileobject.filename)[0])           
         else:
-            fileobject = Download_Ongoing.objects.latest('id')
+            fileobject = Download_Ongoing.objects.get(pk=pk)
             if "Extracting" in fileobject.status and ".tar" in splitext(fileobject.filename)[1]:
                 foldername = os.path.join(basefolder, '_UNPACK_' + splitext(fileobject.filename)[0])
             elif "extracted" in fileobject.status and ".tar" in splitext(fileobject.filename)[1]:
@@ -570,9 +570,10 @@ def opendir(request):
         else:
             opener ="open" if sys.platform == "darwin" else "xdg-open"
             subprocess.call([opener, foldername])
-        return HttpResponse("")
-    except Exception as e:
-        return HttpResponse("Error: %s" % e)    
+        return HttpResponse("succefully opened directory")
+    else:
+        return HttpResponse("No directory set to open dir") 
+
         
 def read_log(request):
     log_file = open(log().my_log)

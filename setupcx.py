@@ -26,7 +26,7 @@ includes = ['PIL._imaging.so']
 
 setup(
     name = 'IRCapp',
-    version = '2.0',
+    version = '2.0.2',
     description = 'Simple IRC app based on irclib',
     author = 'MrJ',
     options = {'build_exe': {'include_files':includefiles, 'packages':packages, "excludes": ['pytz', 'core'], "include_msvcr" : include_msvcr}}, 
