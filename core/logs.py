@@ -1,5 +1,4 @@
 import datetime
-from django.utils.translation import ugettext as _
 import os, sys
 from core.models import Download_Path
 import settings
@@ -7,7 +6,7 @@ import settings
 def directory():
     if Download_Path.objects.all().count() == 0:
         #temporary solution to get download path for english, german and french speaking users to avoid third party dependancy
-        default = os.path.join(os.path.expanduser('~'), _('Downloads'))
+        default = os.path.join(os.path.expanduser('~'), 'Downloads')
         if not os.path.exists(default):
             default = os.path.join(os.path.expanduser('~'), 'Téléchargements')  
         #config.ini file has priority
@@ -21,7 +20,7 @@ def directory():
             Download_Path(download_path=default).save()
             return Download_Path.objects.latest('id').download_path
         else:
-            return _("Error : could not find default download directory")
+            return "Error : could not find default download directory"
     else:
         return Download_Path.objects.latest('id').download_path
             

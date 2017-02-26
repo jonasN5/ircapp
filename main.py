@@ -9,6 +9,13 @@ from django.core.wsgi import get_wsgi_application
 import cherrypy
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler
+try:
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+except:
+    BASE_DIR = os.path.dirname(sys.executable)
+#need to add paths to sys.path to be able to import models
+sys.path.append(BASE_DIR)
+sys.path.append(os.path.join(BASE_DIR, 'core'))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from core.models import *

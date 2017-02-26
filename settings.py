@@ -1,12 +1,8 @@
 import os, sys
-
 try:
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 except:
     BASE_DIR = os.path.dirname(sys.executable)
-
-sys.path.append(BASE_DIR)
-sys.path.append(os.path.join(BASE_DIR, 'ircapp'))
 
 
 SECRET_KEY = '!8gd%24y2x#6t^npsij&+)*pc^%jyzh=np%cr5e6#78l6xdv3w'

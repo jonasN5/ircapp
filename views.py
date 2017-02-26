@@ -165,9 +165,12 @@ def manage_queue(down_ongoing):
     if not Download_Ongoing.objects.exclude(pk=down_ongoing.id).filter(server=down_ongoing.server, active=True):
         print("stop signal")
         botqueue.put("stop")
-    #make sure the stop signal has been passed to the bot before deleting the queue
+    #the following commented section sometimes leads to an infinite loop, needs a detailed fix
+    """
+    make sure the stop signal has been passed to the bot before deleting the queue
     while not botqueue.empty():
         time.sleep(0.2)   
+    """    
     print ("removing %s from queue" % down_ongoing.server)
     del main.queuedict[down_ongoing.server+down_ongoing.username]
     down_ongoing.delete()

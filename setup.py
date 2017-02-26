@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='ircapp',
-      version='2.0.2',
+      version='2.0.3',
       author='MrJ',
       description='Simple IRC Client',
       license='MIT',
