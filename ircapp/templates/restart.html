@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-{% load staticfiles %}
+{% load static %}
 
 <html>
   <head>
@@ -20,11 +20,8 @@
 <body>
     <style type='text/css'>
         body
-        {background-image:
-        url(/static/ic_ircapp_restart.svg);
-        background-position:
-        50%
-        50%;
+        {background-image: url(/static/ic_ircapp_restart.svg);
+        background-position:50%;
         background-repeat: no-repeat;}
     </style>
     <script>
@@ -34,7 +31,7 @@
                     type: "get",
                     data : { par : "respawn" },
                     success: function( response ) {
-                        if ( response === "restarted" ) {
+                        if ( response === "OK" ) {
                             window.location.replace("/")
                         }
                     }
@@ -42,7 +39,7 @@
         }; 
 
         $(document).ready( function () {
-            setTimeout(Pingserver, 17000);
+            setTimeout(Pingserver, 5000);
         });
         
     </script>    

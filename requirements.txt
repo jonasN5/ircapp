@@ -1,0 +1,10 @@
+django~=3.2.7
+rarfile~=4.0
+irc~=19.0.1
+requests~=2.22.0
+cherrypy~=18.6.1
+pytz~=2019.3
+miniupnpc~=2.0.2
+easygui~=0.98.2
+names~=0.3.0
+dataclasses_json~=0.5.6

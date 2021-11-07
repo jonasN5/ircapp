@@ -109,7 +109,7 @@ a {
 }
 
 #nextpage, #prevpage, #firstpage {
-  cursor: hand;
+  cursor: pointer;
   font-size: 14px;
   text-transform: uppercase;
   font-weight: bold;
@@ -117,7 +117,6 @@ a {
 
 #nextpage:hover, #prevpage:hover, #firstpage:hover {
   cursor: pointer;
-  cursor: hand;
 }
 
 #nextpage:active, #prevpage:active, #firstpage:active {
@@ -144,7 +143,6 @@ a {
 #query tr:hover {
   background-color: #03a9f4;
   color: #fff;
-  cursor: hand;
   cursor: pointer;
 }
 
@@ -169,11 +167,11 @@ a {
   float: right;
 }
 
-#down table, #upload_ongoing table {
+#down table, #UploadOngoing table {
   width: 100%;
 }
 
-#down table tr td:first-of-type, #upload_ongoing table tr td:first-of-type {
+#down table tr td:first-of-type, #UploadOngoing table tr td:first-of-type {
   max-width: 380px;
   white-space: nowrap;
   overflow: hidden;
@@ -181,18 +179,18 @@ a {
   padding-right: 8px;
 }
 
-#down table tr td:nth-child(2), #upload_ongoing table tr td:nth-child(2) {
+#down table tr td:nth-child(2), #UploadOngoing table tr td:nth-child(2) {
   padding-right: 8px;
   text-align: right;
   max-width: 100px;
 }
 
-#down table tr td:nth-child(3), #upload_ongoing table tr td:nth-child(3) {
+#down table tr td:nth-child(3), #UploadOngoing table tr td:nth-child(3) {
   padding-right: 8px;
   width: 215px;
 }
 
-#down table tr td:nth-child(4), #upload_ongoing table tr td:nth-child(4) {
+#down table tr td:nth-child(4), #UploadOngoing table tr td:nth-child(4) {
   text-align: right;
   width: 20px;
 }
@@ -202,22 +200,22 @@ a {
   overflow-y: auto;
 }
 
-#download_ongoing, #upload_ongoing {
+#DownloadOngoing, #UploadOngoing {
   color: #212121;
 }
 
-#download_ongoing table tr:nth-child(2) td:first-of-type:hover{
+#DownloadOngoing table tr:nth-child(2) td:first-of-type:hover{
   cursor: initial;
   color: #212121;
 }
 
-#download_ongoing table tr td:first-of-type:hover, #history table tr td:first-of-type:hover {
+#DownloadOngoing table tr td:first-of-type:hover, #history table tr td:first-of-type:hover {
   cursor: pointer;
   cursor: hand;
   color: #03A9F4;
 }
 
-#download_ongoing table tr td:first-of-type:active, #history table tr td:first-of-type:active {
+#DownloadOngoing table tr td:first-of-type:active, #history table tr td:first-of-type:active {
   color: #212121;
 }
 

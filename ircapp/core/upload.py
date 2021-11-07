@@ -1,16 +1,11 @@
 #!/usr/bin/python3
 
 
-
-import sys
 import os
 import struct
 import irc.client
-import requests
 import threading
-import time
-import datetime
-from core.logs import log
+from core.utils.logging import log
 from core.models import *
 import random, string
 from django.utils.timezone import now as utcnow
@@ -18,7 +13,8 @@ from jaraco.stream import buffer
 import miniupnpc
 import socket
 from multiprocessing import Queue
-import main, settings
+import settings
+import main
 import re
 
 
@@ -40,7 +36,7 @@ def upload_monitoring(self, connection, upload):
                 tm = 99999
             eta = utcnow() + datetime.timedelta(seconds=tm)
 
-            speed = int(speed/1024)
+            speed = int(speed/1000)
             upload.status, upload.progress, upload.completed, upload.eta, upload.timeleft = 'Uploading...', percentage, completed, eta, tm
             #workaround for occasionnal empty packages
             if speed:
@@ -155,7 +151,7 @@ class DCCSend(irc.client.SimpleIRCClient):
     
     
     def signal_listener(self, connection, event):
-        botqueue = main.queuedict[connection.server+self.bot]
+        botqueue = main.queuedict[connection.server + self.bot]
         while True:
             while botqueue.empty():
                 time.sleep(0.2)
@@ -308,7 +304,7 @@ class DCCSend(irc.client.SimpleIRCClient):
                 break
 
 def DCC_deamonthread(c, server, nickname, upload):
-    botqueue = main.queuedict[server+c.bot] = Queue()
+    botqueue = main.queuedict[server + c.bot] = Queue()
     i=1    
     while True:
         try:
@@ -332,7 +328,7 @@ def upload_file(filename, rec_nick, pw):
     irc.events.numeric["338"] = "whoisactually" #numeric on rizon where IP address is replied to a WHOIS command  
 
     irc.client.ServerConnection.buffer_class.encoding = 'latin-1'
-    upload = Upload_Ongoing(filename=filename,status="Connecting to server...", active=True, server=server, username=rec_nick)
+    upload = UploadOngoing(filename=filename,status="Connecting to server...", active=True, server=server, username=rec_nick)
     upload.save()
     c = DCCSend(filename, rec_nick, pw, upload)
     nickname = ''.join(random.choice(string.ascii_lowercase) for i in range(10))   

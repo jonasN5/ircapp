@@ -17,10 +17,11 @@ def copy_rec(root_dir):
 
 data_files += copy_rec("ircapp")
 
+version = exec(open('ircapp/version.py').read())
 setup(name='ircapp',
       # Keep version in sync with stdeb/__init__.py and install section
       # of README.rst.
-      version='2.0.3',
+      version=version,
       author='MrJ',
       description='Simple IRC Client',
       license='MIT',

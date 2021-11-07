@@ -12,12 +12,12 @@ Simply download and execute the setup.exe file
 *   To install, run:         
      
         sudo apt-get install python3-pip python3-tk unrar
-        sudo pip3 install django==1.8.5 irc requests cherrypy pytz miniupnpc
+        sudo pip3 install django irc requests cherrypy pytz miniupnpc
         sudo dpkg -i IRCapp_2.0.3.deb
 *   In case you choose to clone the source code, for instance if you implement a server, you should run :
 
         sudo apt-get install python3-pip python3-tk unrar       
-        sudo pip3 install django==1.8.5 irc requests cherrypy pytz rarfile miniupnpc
+        sudo pip3 install django irc requests cherrypy pytz rarfile miniupnpc
 ##OSX
 I'm currently trying to get a Mac and will create a Mac distribution ASAP !
 
@@ -27,8 +27,10 @@ https://github.com/themadmrj/ircapp/issues
 ###To do's  
 A few major things still need to be done:  
 
-*   Add OSX distribution
-*   Add SSL support
+* Add OSX distribution
+* Add SSL support
+
+###Changelog 2.1.0 :
 
 ###Changelog 2.0 (since 1.1.1) :
 *   Add: Direct File Transfer (you can now send any file to any IRCapp user)

@@ -1,12 +1,12 @@
 {% extends "search.html" %}
-{% load staticfiles %}
+{% load static %}
 
 {% block title %}IRCapp-Results{% endblock %}
 
 
     {% block searchresults %}
     <div id="results_div">
-        {% if noquick %}
+        {% if no_quick %}
             {% if results %}
                 <div id="noquick">No match found through quick downloading, displaying results instead</div>
             {% else %}
@@ -17,7 +17,7 @@
 
             {% if results %}
                 <a id=nextpage>Next&rsaquo;</a>
-                {% if pn >= 1 %}
+                {% if page_number >= 1 %}
                     <a id=prevpage>&ensp;&lsaquo;Prev</a>
                     <a id=firstpage>&ensp;&laquo;First</a>
                 {% endif %}
@@ -25,28 +25,27 @@
 		<table id="query" class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp results-table">
                         {% for result in results %}
                             <tr>
-                            {% if "criten" in result.naddr %}
-                                <td><span>{{result.name}}</span>
+                            {% if "criten" in result.network %}
+                                <td><span>{{result.filename}}</span>
                                 <img src="{{STATIC_URL}}ircapp_bolt.svg">
                                 </td>
                             {% else %}
-                                <td><span>{{result.name}}</span>
+                                <td><span>{{result.filename}}</span>
                             {% endif %}
 
-                            <td>{{result.szf}}</td>
-                            <td>{{result.sz}}</td>
-                            <td>{{result.naddr}}</td>
-                            <td>{{result.cname}}</td>
-                            <td>{{result.uname}}</td>
-                            <td>{{result.n}}</td>
+                            <td>{{result.size_str}}</td>
+                            <td>{{result.size}}</td>
+                            <td>{{result.network}}</td>
+                            <td>{{result.channel}}</td>
+                            <td>{{result.bot}}</td>
+                            <td>{{result.pack_number}}</td>
 
 
                             </tr>
                         {% endfor %}
                 </table>
-                </p>
                 <a id=nextpage>Next&rsaquo;</a>
-                {% if pn >= 1 %}
+                {% if page_number >= 1 %}
                     <a id=prevpage>&ensp;&lsaquo;Prev</a>
                     <a id=firstpage>&ensp;&laquo;First</a>
                 {% endif %}
@@ -65,14 +64,15 @@
                             var num = 0
                         }
                         if ( direction === "next" ) {
-                            return url + "&pn=" + (parseInt(num) + 1);
+                            return url + "&page_number=" + (parseInt(num) + 1);
                         } else if ( direction === "prev" ) {
-                            return url + "&pn=" + (parseInt(num) - 1);
+                            return url + "&page_number=" + (parseInt(num) - 1);
                         } else {
-                            return url + "&pn=0";
+                            return url + "&page_number=0";
                         }
                     };
-            if ( {{num}} === 31 ){
+
+            if ( {{can_fetch_more_results|yesno:"true,false"}} ){
                 $('[id^="nextpage"]').click(function() { window.location.replace(Pageurl("next")) });
             } else {
                 //some css to change the color
@@ -108,25 +108,25 @@
 
                         }
                         $.ajax({
-                            url: "/search_download/",
-                            type: "get",
-                            data : { data : info[0] + ',' + info[1] + ',' + info[2] + ',' +  info[3] + ',' + info[4], filename : q },
+                            url: "/download/",
+                            type: "post",
+                            data : { package_info : JSON.stringify([q, info[0], info[1], info[2], info[3], info[4]])},
                             success: function( response ) {
                                 if ( response.fields ) {
                                     //download is not launched; item is added to the queue
                                   var item = [];
 	                              var filename = response.fields.filename,
 	                                size = response.fields.size,
-	                                sizeraw = response.fields.sizeraw,
+	                                size_str = response.fields.size_str,
 	                                network = response.fields.server,
 	                                bolt_pic = "";
 	                              if ( network.indexOf("criten") >= 0 ) {
 		                            bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
 	                              }
 	                              item.push(
-		                            "<tr id='" + response.pk + "' name='" + sizeraw + "'>" +
+		                            "<tr id='" + response.pk + "' name='" + size + "'>" +
 		                            "<td>" + filename + " " + bolt_pic +"</td>" +
-		                            "<td>" + size + "</td>" +
+		                            "<td>" + size_str + "</td>" +
 		                            "<td>Queued</td>" +
 		                            "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
 		                            "</tr>"

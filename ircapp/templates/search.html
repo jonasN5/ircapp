@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-{% load staticfiles %}
+{% load static %}
 
 <html>
   <head>
@@ -31,7 +31,7 @@
 	<span class="noselect ircapp-logo mdl-layout-title"><a href="/"><img src="{{STATIC_URL}}ic_ircapp_logo_white.svg"></a></span>
 	<form class="" action="{% url 'search' %}" method="GET" id="top-search">
 	  <div id="searchbox">
-	    <input id="searchBox" placeholder="Search" name="q" type="text" class="searchbox">
+	    <input id="searchBox" placeholder="Search" name="query" type="text" class="searchbox">
 	  </div>
 	</form>
 	<button id="download" title="Quick download" class="quick-download-button mdl-button mdl-js-button">
@@ -90,9 +90,6 @@
     <a id="report_bug" href="https://github.com/themadmrj/ircapp/issues" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
       Report bug
     </a>
-    <a href="bitcoin:1KTXsH5D7nG9vozmWb3WkbBJrPnwsEieis" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-      Make a donation
-    </a>
   </div>
   <div class="mdl-card__menu">
     <button id="close_about" style="color: rgba(0, 0, 0, 0.54)" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -141,9 +138,9 @@
 	  </span>
 	</form>
 	{% if contains %}
-	{% for x in contains %}
-	<span id='{{x.id}}' class="search-chip"><img id='delete_pic' style="padding-bottom:2px" src='{{STATIC_URL}}ic_delete_lightgray.svg'> {{ x.text }}</span>
-	{% endfor %}
+        {% for x in contains %}
+            <span id='{{x.0}}' class="search-chip"><img id='delete_pic' style="padding-bottom:2px" src='{{STATIC_URL}}ic_delete_lightgray.svg'> {{ x.1 }}</span>
+        {% endfor %}
 	{% endif %}
       </div>
       <div id="excludes_div">
@@ -154,9 +151,9 @@
 	  </span>
 	</form>
 	{% if excludes %}
-	{% for x in excludes %}
-	<span id='{{x.id}}' class="search-chip"><img id='delete_pic' style="padding-bottom:2px" src='{{STATIC_URL}}ic_delete_lightgray.svg' height="20px"> {{x.text}}</span>
-	{% endfor %}
+        {% for x in excludes %}
+            <span id='{{x.0}}' class="search-chip"><img id='delete_pic' style="padding-bottom:2px" src='{{STATIC_URL}}ic_delete_lightgray.svg' height="20px"> {{x.1}}</span>
+        {% endfor %}
 	{% endif %}
       </div>
     </div>
@@ -197,7 +194,7 @@
   </div>
   <div id="folder_div">
     {% if free_space == -1 %}
-      <div id="no_dir">Couldn’t find the corresponding download folder, please set one to pursue downloading</div>
+      <div id="no_dir">Couldn’t find the corresponding download folder, please set one and make sure it exists.</div>
       Download directory: <a id="base_folder" title="Double click to change">No directory set</a>
     {% else %}
       Download directory: <a id="base_folder" title="Double click to change">{{directory}}</a>
@@ -225,7 +222,7 @@
       </table>
     </div>
     <hr>
-    <div id="download_ongoing">
+    <div id="DownloadOngoing">
       <table>
         <!--
           this is where the ongoing downloads are populated by jquery
@@ -273,9 +270,6 @@
 <div id="upload_div" style="display:none;width:750px;position:fixed;left:calc(50% - 250px);top:calc(50% - 165px)" class="mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title mdl-card__title_up">
     <span class="mdl-card__title-text">Upload box</span>
-
-  
-    </span>    
   </div>
 
   <div class="mdl-card__supporting-text">
@@ -301,7 +295,7 @@
     
     
 
-        <div id="upload_ongoing" style="display: none;">
+        <div id="UploadOngoing" style="display: none;">
       <table>
 	  <tr class='upload'>
 	    <td></td>
@@ -356,38 +350,53 @@
 
 <script>
 ///this first part is just for the settings
-if ( "{{quickdown_value}}" === "NORM" ){
+if ( "{{quick_down_value}}" === "NORM" ){
     $('#flash1').prop('checked', true);
-} else if ( "{{quickdown_value}}" === "GOOD" ){
+} else if ( "{{quick_down_value}}" === "GOOD" ){
     $('#flash2').prop('checked', true);
-} else if ( "{{quickdown_value}}" === "EXCE" ){
+} else if ( "{{quick_down_value}}" === "EXCE" ){
     $('#flash3').prop('checked', true);
 } else {
     $('#flash4').prop('checked', true);
 }
 
 $('#settings_div').on('click', '.mdl-radio__button', function(events) {
-    $.post( "/preferences/", { priority : $(this).val() }  );
+    $.ajax({
+      url: '/preferences/',
+      type: 'put',
+      data: { priority : $(this).val() } ,
+      success: function(response) {}
+    });
 });
 
 $('#contains_div').on('click', 'img', function(events) {
   var self   = $(this).parent(),
   pk  = self.attr('id');
   self.remove();
-  $.get( "/delete_pref/", { pk : pk, contains : "contains" }  );
+  $.ajax({
+      url: '/preferences/',
+      type: 'delete',
+      data: { pk : pk } ,
+      success: function(response) {}
+  });
 });
 $('#excludes_div').on('click', 'img', function(events) {
   var self   = $(this).parent(),
   pk  = self.attr('id');
   self.remove();
-  $.get( "/delete_pref/", { pk : pk, excludes : "excludes" }  );
+  $.ajax({
+      url: '/preferences/',
+      type: 'delete',
+      data: { pk : pk } ,
+      success: function(response) {}
+  });
 });
 $( "#contains" ).submit( function (event) {
   event.preventDefault();
   if ( $( "#contains_text" ).val().length > 0 ){
     $.ajax({
       url: "/preferences/",
-      type: "post",
+      type: "put",
       data: { contains : $( "#contains_text" ).val()},
 
       success: function( data ) {
@@ -402,7 +411,7 @@ $( "#excludes" ).submit( function (event) {
   if ( $( "#excludes_text" ).val().length > 0 ){
     $.ajax({
       url: "/preferences/",
-      type: "post",
+      type: "put",
       data: { excludes : $( "#excludes_text" ).val()},
 
       success: function( data ) {
@@ -523,7 +532,7 @@ var active = false,
 $(document).ready( function () {
     Getqueue();
     Getsettings();
-    if ( "{{downbox}}" !== "True" ){
+    if ( "{{down_box}}" == "False" ){
       $("#down").hide();
     }
     Gethistory();
@@ -548,7 +557,7 @@ $('#base_folder').tooltipster({
 $('#base_folder').dblclick(function(event) {
   $.ajax({
     url: "/download_path/",
-    type: "get",
+    type: "post",
 
     success: function( data ) {
       if ( data.success ) {
@@ -597,7 +606,7 @@ function Getspace(update) {
       type: "get",
 
       success: function( data ) {
-	$("#free_sp").html(data.space + " GB free");
+	$("#free_sp").html(data + " GB free");
       },
       error: function( jqXHR, textStatus ) {
 	console.log( "space failed: " + textStatus );
@@ -629,17 +638,27 @@ $('#down').on('click', '#delete_pic', function(events) {
   if ( myclass === "queue" ){
     self.remove();
     queue_count = queue_count - 1;
-    $.get( "/queue/", { pk : pk }  );
+    $.ajax({
+      url: '/queue/',
+      type: 'delete',
+      data: { pk : pk } ,
+      success: function(response) {}
+    });
   } else if ( myclass === "history" ){
     self.remove();
     history_count = history_count - 1;
-    $.get( "/history/", { pk : pk }  );
+    $.ajax({
+      url: '/history/',
+      type: 'delete',
+      data: { pk : pk } ,
+      success: function(response) {}
+    });
   } else if ( myclass === "upload" ){
       $.get( "/cancel_upload/" );
       $(this).parent().prev().html("Canceling...");  
   } else {
     if ( $(this).parent().prev().html() != "Canceling..." ){
-      $.get( "/cancel_download/", { id : pk } );
+      $.post( "/cancel_download/", { pk : pk } );
       $(this).parent().prev().html("Canceling...");
     }
   }
@@ -652,13 +671,19 @@ $('#upload_div').on('click', '#delete_pic', function(events) {
 });
 
 $('#down').on('click', '#opendir', function(event) {
-  var self   = $(this).parent(),
-      myclass = self.parent().parent().parent().attr('id');
-  $.get( "/opendir/", { pk : self.attr('id'), myclass : myclass }  );  
+  var self = $(this).parent();
+  var myClass = self.parent().parent().parent().attr('id');
+  var type = myClass == 'history' ? 'history' : 'download_ongoing';
+  $.get( "/open_download_dir/", { pk : self.attr('id'), type : type }  );
 });
 $('#close_download_box').click(function(event) {
   $("#down").hide();
-  $.post( "/download_settings/", { downbox : 0 }  );
+    $.ajax({
+        url: '/download_settings/',
+        type: 'put',
+        data: { down_box : 0 },
+        success: function(response) {}
+    });
 });
 $('#close_upload_box').click(function(event) {
   $("#upload_div").hide();
@@ -674,27 +699,57 @@ $('#restart_button').click(function(event) {
   });
 $('#shutdown').click(function(event) {
   if ( $("#shutdown").is(':checked') ){
-    $.post( "/download_settings/", { shutdown : 1 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { shutdown : 1 },
+      success: function(response) {}
+    });
   } else {
-    $.post( "/download_settings/", { shutdown : 0 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { shutdown : 0 },
+      success: function(response) {}
+    });
   }
 });
 $('#queue_similar').click(function(event) {
   if ( $("#queue_similar").is(':checked') ){
-    $.post( "/download_settings/", { queue_similar : 1 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { queue_similar : 1 },
+      success: function(response) {}
+    });
   } else {
-    $.post( "/download_settings/", { queue_similar : 0 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { queue_similar : 0 },
+      success: function(response) {}
+    });
   }
 });
 $('#download_box_button').click(function(event) {
   if ( $("#down").is(':visible') ){
     $("#down").hide();
-    $.post( "/download_settings/", { downbox : 0 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { down_box : 0 },
+      success: function(response) {}
+    });
   } else {
     $("#down").show();
     $("#settings_div").hide();
     $("#about_div").hide();
-    $.post( "/download_settings/", { downbox : 1 }  );
+    $.ajax({
+      url: '/download_settings/',
+      type: 'put',
+      data: { down_box : 1 },
+      success: function(response) {}
+    });
   }
 });
 $('#down_expand').click(function(event) {
@@ -712,24 +767,24 @@ $( "#download" ).click(function(event) {
   $("#down").show();
   $.ajax({
     url: "/quick_download/",
-    type: "get",
-    data: { q : $( "#searchBox" ).val() },
+    type: "post",
+    data: { query : $( "#searchBox" ).val() },
     success: function( response ) {
       if ( response.fields ) {
 	    //download is not launched; item is added to the queue
 	    var item = [];
 	    var filename = response.fields.filename,
 	    size = response.fields.size,
-	    sizeraw = response.fields.sizeraw,
+	    size_str = response.fields.size_str,
 	    network = response.fields.server,
 	    bolt_pic = "";
 	    if ( network.indexOf("criten") >= 0 ) {
 	      bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
 	    }
 	    item.push(
-	        "<tr id='" + response.pk + "' name='" + sizeraw + "'>" +
+	        "<tr id='" + response.pk + "' name='" + size + "'>" +
 	        "<td>" + filename + " " + bolt_pic +"</td>" +
-	        "<td>" + size + "</td>" +
+	        "<td>" + size_str + "</td>" +
 	        "<td>Queued</td>" +
 	        "<td><img id='delete_pic' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
 	        "</tr>"
@@ -740,7 +795,7 @@ $( "#download" ).click(function(event) {
 	    Recalibrate_table();
       } else {
 	    if ( response.redirect ) {
-	      window.location.replace("/search/?q=" + response.q + "&noquick=True");
+	      window.location.replace("/search/?query=" + response.q + "&no_quick=True");
 	    }
       }
     }
@@ -748,7 +803,11 @@ $( "#download" ).click(function(event) {
 });
 $( "#clear_history" ).click(function() {
   if ( confirm('Are you sure you want to clear your whole history database?') ) {
-    $.get( "/clear_history/" );
+    $.ajax({
+      url: '/history/',
+      type: 'delete',
+      success: function(response) {}
+    });
     $("#history tr").remove();
   }
 });
@@ -782,18 +841,18 @@ function Getqueue() {
     queue_count = data.length; 
 	var items = [];
 	for (i = 0; i < data.length; i++){
-	  var filename = data[i].fields.filename,
-	    size = data[i].fields.size,
-	    sizeraw = data[i].fields.sizeraw,
-	    network = data[i].fields.server,
+	  var filename = data[i].filename,
+	    size_str = data[i].size_str,
+	    size = data[i].size,
+	    network = data[i].server,
 	    bolt_pic = "";
 	  if ( network.indexOf("criten") >= 0 ) {
 	    bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
 	  }
 	  items.push(
-	      "<tr id='" + data[i].pk + "' name='" + filename + "'>" +
+	      "<tr id='" + data[i].id + "' name='" + filename + "'>" +
 	      "<td>" + filename + bolt_pic +"</td>" +
-	      "<td>" + size + "</td>" +
+	      "<td>" + size_str + "</td>" +
 	      "<td>Queued</td>" +
 	      "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
 	      "</tr>"
@@ -868,16 +927,16 @@ function Gethistory() {
         $("#history table tbody").remove();  
 	for (i = 0; i < data.length; i++){
 	  var item = [];
-	  var filename = data[i].fields.filename,
-	    status = data[i].fields.status,
-	    average = Testnull(data[i].fields.average, "speed"),
-	    time = Testnull(data[i].fields.time),
-	    size = Testnull(data[i].fields.size),
-	    attempts = Testnull(data[i].fields.attempts),
-	    duration = Testnull(data[i].fields.duration);
-      item.push( "<tr id='" + data[i].pk + "'>" +
+	  var filename = data[i].filename,
+	    status = data[i].status,
+	    average = Testnull(data[i].average, "speed"),
+	    time = Testnull(data[i].end_date),
+	    size_str = Testnull(data[i].size_str),
+	    attempts = Testnull(data[i].attempts),
+	    duration = Testnull(data[i].duration);
+      item.push( "<tr id='" + data[i].id + "'>" +
         "<td id='opendir'>" + filename  + "</td>" +
-        "<td>" + size + "</td>" +
+        "<td>" + size_str + "</td>" +
         "<td>" + status +
         "</td>" +
         "<td><img id='delete_pic' class='history' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
@@ -920,9 +979,9 @@ function OnProgress(percentComplete, element_number, type)
   type = typeof type !== 'undefined' ? type : "download";
   if ( type === "download" ) {
     //Progress bar
-    $("#download_ongoing td:eq("+element_number+") .progressbox").show();
-    $("#download_ongoing td:eq("+element_number+") .progressbar").width(percentComplete+"%");
-    $("#download_ongoing td:eq("+element_number+") .statustxt").html(percentComplete+" %");
+    $("#DownloadOngoing td:eq("+element_number+") .progressbox").show();
+    $("#DownloadOngoing td:eq("+element_number+") .progressbar").width(percentComplete+"%");
+    $("#DownloadOngoing td:eq("+element_number+") .statustxt").html(percentComplete+" %");
   } else {
     $('.upload_progressbox').show();
     $('.upload_progressbar').width(percentComplete+"%");
@@ -939,17 +998,17 @@ function Upload_Monitor() {
       success: function( response ) {
 	if ( response.fields ){
       $( "#sendfile_container" ).hide();
-      $( "#upload_ongoing" ).show();
-	  $("#upload_ongoing td").eq(0).html(response.fields.filename);
-      Add_tooltip( $("#upload_ongoing tr:first-child td:first-child"), $("#upload_ongoing tr:first-child td:first-child").html(), true );
+      $( "#UploadOngoing" ).show();
+	  $("#UploadOngoing td").eq(0).html(response.fields.filename);
+      Add_tooltip( $("#UploadOngoing tr:first-child td:first-child"), $("#UploadOngoing tr:first-child td:first-child").html(), true );
       $('.tooltip').tooltipster();	
-	  $("#upload_ongoing td").eq(1).html(response.fields.size);
-	  $("#upload_ongoing td").eq(2).html(response.fields.status);
-	  sz = response.fields.completed + " of " + response.fields.size;
+	  $("#UploadOngoing td").eq(1).html(response.fields.size_str);
+	  $("#UploadOngoing td").eq(2).html(response.fields.status);
+	  sz = response.fields.received_bytes_str + " of " + response.fields.size_str;
 	  eta = response.fields.eta;
 	  est = response.fields.timeleft;
-	  $("#upload_ongoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
-	  $("#upload_ongoing td").eq(5).html(Testnull(response.fields.speed, "speed"));
+	  $("#UploadOngoing td").eq(4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
+	  $("#UploadOngoing td").eq(5).html(Testnull(response.fields.speed, "speed"));
   	  if ( response.fields.status === "Uploading..." ){
 	    OnProgress(response.fields.progress, 0, "upload");
       } else {
@@ -969,86 +1028,96 @@ function Monitor() {
         data: { history_count : history_count, queue_count : queue_count },
 
         success: function( response ) {
+            if ( response.update_elements ){
+                ///update history & queue
+                Getqueue();
+                Gethistory();
+            }
+
             ///first we have to check the html table for ongoing downloads
             ///add or remove elements until correct number is reached
-            if ( response ){
-                if ( response[1].fields ){
-                    if ( $.inArray("update_elements", response) !== -1 ){
-                        ///update history & queue
-                        Getqueue();
-                        Gethistory();
-                    }
-                    var tr_number = $('#download_ongoing table tbody').children('tr').length/2;
-                    if ( response[0] !== tr_number ) {
-                        if ( response[0] > tr_number ) {
-                            ///need to add some trs for new ongoing downloads
-                            for (i = 0; i < (response[0] - tr_number); i++){
-                                var new_tr = [];
-                                new_tr.push(
-                                    "<tr class='mainrow'>" + 
-                                    "<td id='opendir'><td><td><td rowspan='2'><img id='delete_pic' src='{{STATIC_URL}}ic_cancel_red.svg'></td>" + 
-                                    "</tr>" +
-                                    "<tr><td><td><td>"+
-                                    "<div class='progressbox' style='display: none;'>"+
-                                    "<div class='progressbar'>"+
-                                    "<span class='statustxt'></span>"+
-                                    "</div></div></td></tr>"
-                                );            
-                                $('#download_ongoing table').prepend(new_tr);
-                            }
-                        } else {
-                            ///too many trs, need to remove the inactive downloads
-                            ///add trs again if some downloads were replaced ?                               
-                            var down_list = [];
-                            for (i = 1; i < response[1].fields + 1; i++){
-                                down_list.push(response[i].fields.id);
-                            }
-                            $('#download_ongoing table tr').each(function () {
-                                if ( $(this).hasClass("mainrow") ){
-                                    if ( $.inArray($(this).attr('id'), down_list) === -1 && response[0] !== tr_number ){
-                                        ///displayed download id is not in down_list, remove elements if more than necessary
-                                        $(this).next().remove();
-                                        $(this).remove();
-                                    }
+            if ( response.download_ongoing_list ){
+                var tr_number = $('#DownloadOngoing table tbody').children('tr').length/2;
+                var ongoingDownloadsCount = response.download_ongoing_list.length;
+                var downloads = response.download_ongoing_list;
+                if ( ongoingDownloadsCount !== tr_number ) {
+                    if ( ongoingDownloadsCount > tr_number ) {
+                        ///need to add some trs for new ongoing downloads
+                        for (i = 0; i < (ongoingDownloadsCount - tr_number); i++){
+                            var new_tr = [];
+                            new_tr.push(
+                                "<tr class='mainrow'>" +
+                                "<td id='opendir'><td><td><td rowspan='2'><img id='delete_pic' src='{{STATIC_URL}}ic_cancel_red.svg'></td>" +
+                                "</tr>" +
+                                "<tr><td><td><td>"+
+                                "<div class='progressbox' style='display: none;'>"+
+                                "<div class='progressbar'>"+
+                                "<span class='statustxt'></span>"+
+                                "</div></div></td></tr>"
+                            );
+                            $('#DownloadOngoing table').prepend(new_tr);
+                        }
+                    } else {
+                        ///too many trs, need to remove the inactive downloads
+                        ///add trs again if some downloads were replaced ?
+                        var down_list = [];
+                        for (i = 0; i < ongoingDownloadsCount; i++){
+                            down_list.push(downloads[i].id);
+                        }
+                        $('#DownloadOngoing table tr').each(function () {
+                            if ( $(this).hasClass("mainrow") ){
+                                if ( $.inArray($(this).attr('id'), down_list) === -1 && ongoingDownloadsCount !== tr_number ){
+                                    ///displayed download id is not in down_list, remove elements if more than necessary
+                                    $(this).next().remove();
+                                    $(this).remove();
                                 }
-                            });
-                        }
-                    }
-                    ///now the table is built
-                    ///we can proceed and populate it with data
-					console.log(response);
-                    for (i = 0; i < response[0]; i++){
-                        $('#download_ongoing tr').eq(2*i).attr("id", response[i+1].fields.id);
-                        $("#download_ongoing td").eq(7*i).html(response[i+1].fields.filename);          
-                        Add_tooltip( $("#download_ongoing tr:first-child td:first-child"),
-                        $("#download_ongoing tr:first-child td:first-child").html(), true );
-                        $('.tooltip').tooltipster();	
-                        $("#download_ongoing td").eq(7*i+1).html(response[i+1].fields.size);
-                        $("#download_ongoing td").eq(7*i+2).html(response[i+1].fields.status);
-                        sz = response[i+1].fields.completed + " of " + response[i+1].fields.size;
-                        eta = response[i+1].fields.eta;
-                        est = response[i+1].fields.timeleft;
-                        if ( response[i+1].fields.filename.indexOf("file transfer") >= 0 ){
-                            ///direct file transfer
-                            if ( $("#download_ongoing td").eq(7*i+4).is(':empty') ) {
-                                $("#download_ongoing td").eq(7*i+4).html("Nickname & pw: " + "<a style='color:#03a9f4'>" + 
-                                    $("#get_nickname_text").html() + "</a> | <a style='color:#03a9f4'>" + $("#get_password_text").html() + "</a>");
                             }
-                        } else {
-                            $("#download_ongoing td").eq(7*i+4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
-                        }                        
-                        $("#download_ongoing td").eq(7*i+5).html(Testnull(response[i+1].fields.speed, "speed"));
-                        active = response[i+1].fields.active;
-                        if ( response[i+1].fields.status === "Downloading..." ){
-                            OnProgress(response[i+1].fields.progress, 7*i+6);
-                        } else {
-                            $("#download_ongoing td:eq("+(7*i+6)+") .progressbox").hide();
+                        });
+                    }
+                }
+                ///now the table is built
+                ///we can proceed and populate it with data
+                console.log(response);
+                for (i = 0; i < ongoingDownloadsCount; i++){
+                    $('#DownloadOngoing tr').eq(2*i).attr("id", downloads[i].id);
+                    $("#DownloadOngoing td").eq(7*i).html(downloads[i].filename);
+                    Add_tooltip( $("#DownloadOngoing tr:first-child td:first-child"),
+                    $("#DownloadOngoing tr:first-child td:first-child").html(), true );
+                    $('.tooltip').tooltipster();
+                    $("#DownloadOngoing td").eq(7*i+1).html(downloads[i].size_str);
+
+                    ///Convert the ETA into the number of seconds left
+                    var _status = downloads[i].status;
+                    if (_status.length > 10 && _status.slice(0, 10) == "Requesting"){
+                      var now = new Date();
+                      var startDate = Date.parse(_status.split('at:')[1]);
+                      var seconds = parseInt((startDate - now)/1000);
+                      _status = "Requesting pack in " + seconds.toString() + "s";
+                    }
+                    $("#DownloadOngoing td").eq(7*i+2).html(_status);
+                    sz = downloads[i].received_bytes_str + " of " + downloads[i].size_str;
+                    eta = downloads[i].eta;
+                    est = downloads[i].time_left;
+                    if ( downloads[i].filename.indexOf("file transfer") >= 0 ){
+                        ///direct file transfer
+                        if ( $("#DownloadOngoing td").eq(7*i+4).is(':empty') ) {
+                            $("#DownloadOngoing td").eq(7*i+4).html("Nickname & pw: " + "<a style='color:#03a9f4'>" +
+                                $("#get_nickname_text").html() + "</a> | <a style='color:#03a9f4'>" + $("#get_password_text").html() + "</a>");
                         }
+                    } else {
+                        $("#DownloadOngoing td").eq(7*i+4).html(Testnull(sz + " &mdash; " + est + " left @ " + eta));
+                    }
+                    $("#DownloadOngoing td").eq(7*i+5).html(Testnull(downloads[i].speed, "speed"));
+                    active = downloads[i].active;
+                    if ( downloads[i].status === "Downloading..." ){
+                        OnProgress(downloads[i].progress, 7*i+6);
+                    } else {
+                        $("#DownloadOngoing td:eq("+(7*i+6)+").progressbox").hide();
                     }
                 }
             } else {
-                ///here the response is None, meaning there is no more download ongoing
-                $('#download_ongoing table tbody').remove();
+                ///There is no more download ongoing
+                $('#DownloadOngoing table tbody').remove();
             }        
         },    
         error: function( jqXHR, textStatus ) {
