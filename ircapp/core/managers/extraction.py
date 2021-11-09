@@ -52,7 +52,7 @@ class FileExtractor:
                 # This test is added in case some txt is extracted with the folder
                 while not os.path.isdir(os.path.join(temp_path, os.listdir(temp_path)[x])):
                     # Sometimes the file extracted is the final file, so no further rar extraction is needed; in this
-                    # case, test for it's size and finish.
+                    # case, test for its size and finish.
                     if os.path.getsize(os.path.join(temp_path, os.listdir(temp_path)[x])) > 90 / 100 * history.size:
                         is_file_complete = True
                         break

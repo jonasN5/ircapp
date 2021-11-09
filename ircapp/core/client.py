@@ -116,6 +116,7 @@ class IRCAppClient(SimpleIRCClient):
         """Join a channel if not already done."""
         if channel not in self.joined_channels:
             self.connection.join(channel)
+            self.joined_channels.append(channel)
             log(f'Channel {channel} joined')
 
     def _request_package(self, ircapp_connection: IRCAppConnection):
