@@ -1,0 +1,5 @@
+include ircapp/favicon.ico
+include ircapp/config.ini
+recursive-include ircapp/templates *
+recursive-include ircapp/core/static *
+
