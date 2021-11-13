@@ -135,7 +135,8 @@ class Search(View):
             context['results'] = response.results
             context['page_number'] = response.page_number
             context['can_fetch_more_results'] = response.can_fetch_more_results
-            print(_json)
+            if response.is_empty:
+                context['message'] = f'No match for “{query}” on the search engine'
         except ConnectionError:
             context['message'] = "Couldn't access the search engine, exiting"
 

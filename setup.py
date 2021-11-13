@@ -1,39 +1,43 @@
-from setuptools import setup
-import os
+# setup for cx_freeze to freeze the application
+
+import sys, os
+# from cx_Freeze import setup, Executable
+from setuptools import setup, find_packages
+from ircapp.ircapp.version import __version__
 
 data_files = [
-    ('share/applications/', ['ircapp.desktop']),
-    ('share/icons/hicolor/scalable/apps/', ['ircapp/core/static/ircapp_bolt.svg'])
+    (os.path.join('share', 'applications'), ['ircapp.desktop']),
+    (os.path.join('share', 'icons', 'hicolor', 'scalable', 'apps'),
+     ['ircapp/core/static/ircapp_bolt.svg'])
 ]
 
-def copy_rec(root_dir):
-    mylist = []
-    for (dirpath, dirnames, filenames) in os.walk(root_dir):
-        for f in filenames:
-            mylist.append(("lib/python3/dist-packages/" + dirpath + "/", [os.path.join(dirpath, f)]))
-    return mylist
+base = None
+appname = "IRCapp"
+include_msvcr = False
+rarfile = 'rarfile'
+if sys.platform == "win32":
+    shutil.copyfile(os.path.join(os.path.dirname(sys.executable), 'unrar.dll'), os.path.join('build', 'UnRAR.dll'))
+    include_msvcr = True
+    appname = "IRCapp.exe"
+    base = "Win32GUI"
+    rarfile = 'unrar'
 
-data_files += copy_rec("ircapp")
+includefiles = ['ircapp/']
+packages = ['django', 'irc', 'requests', rarfile, 'cherrypy', 'miniupnpc', 'easygui', 'names', 'dataclasses_json']
 
-# Note: rarfile, names and dataclasses_json are required but not available as debian packages so we include them in the app directly
-setup(name='ircapp',
-      version='3.0.0',
-      author='MrJ',
-      description='Simple IRC Client',
-      license='MIT',
-      url='https://github.com/themadmrj/ircapp',
-      entry_points={
-          'gui_scripts': ['ircapp = ircapp.main:start_app']
-      },
-      data_files=data_files,
-      install_requires=[
-          'django>=3.2.7',
-          'irc>=19.0.1',
-          'requests>=2.22.0',
-          'miniupnpc>=2.0.2',
-          'cherrypy>=18.6.1',
-          'pytz>=2019.3',		
-          'easygui>=0.98.2'
-      ]
-      )
-
+setup(
+    name='IRCapp',
+    version=__version__,
+    description='Simple IRC app based on irclib',
+    author='MrJ',
+    data_files=data_files,
+    license='MIT',
+    url='https://github.com/themadmrj/ircapp',
+    packages=find_packages(exclude=['*test*']),
+    options={'build_exe': {'include_files': includefiles, 'packages': packages, 'include_msvcr': include_msvcr}},
+    entry_points={
+        'gui_scripts': ['ircapp = ircapp.main:start_app']
+    },
+    include_package_data=True,
+    install_requires=packages
+)

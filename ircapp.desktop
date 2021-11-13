@@ -2,8 +2,8 @@
 Version=3.0
 Name=IRCApp
 Comment=IRCApp
-Exec=/usr/bin/ircapp
-Icon=/usr/share/icons/hicolor/scalable/apps/ircapp_bolt.svg
+Exec=ircapp
+Icon=ircapp_bolt.svg
 Terminal=false
 Type=Application
 Categories=Network;

@@ -74,7 +74,7 @@ class Status:
 
 class DownloadHistory(FormatableModel):
     status = models.CharField(max_length=200)
-    duration = models.DurationField(null=True)
+    duration = models.DurationField(default=datetime.timedelta())
     attempts = models.IntegerField(default=1)
     end_date = models.DateTimeField(auto_now=True)
 
