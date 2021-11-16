@@ -10,10 +10,10 @@ Simply download and execute the `setup.exe` file located in the `dist` folder.
 
 ## Unix
 
-* To install, first download `ircapp_3.0.tar.gz` located in the `dist` folder, then run:
+* To install, first download `ircapp_{version}.tar.gz` located in the `dist` folder, then run:
 
       sudo apt-get install python3-pip
-      pip3 install ircapp_3.0.tar.gz
+      pip3 install ircapp_{version}.tar.gz
 * To uninstall, run: `pip3 uninstall ircapp`.
 
 ## OSX
