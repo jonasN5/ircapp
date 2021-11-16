@@ -81,7 +81,10 @@ class DownloadHistory(FormatableModel):
     @property
     def average(self):
         """Average download speed"""
-        return round((self.size / 1000) / self.duration.total_seconds(), 0)
+        if self.duration.total_seconds() == 0:
+            return 0
+        else:
+            return round((self.size / 1000) / self.duration.total_seconds(), 0)
 
     def format(self):
         """Transform the object into a json usable by the html template."""

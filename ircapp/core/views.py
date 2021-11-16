@@ -19,6 +19,7 @@ from core.models import *
 from core.utils.directory import get_download_directory, get_free_space_mb
 from core.utils.logging import get_log_path, log
 from core.dispatcher import Dispatcher
+from ircapp.version import __version__
 
 
 def _get_param_or_return_400(kwargs: dict, key: str):
@@ -41,6 +42,7 @@ class Index(View):
             'excludes': _settings.excludes_list,
             'path_form': PathForm(instance=_settings),
             'down_box': _settings.download_box_state,
+            'version': __version__
         }
         return render(request, 'search.html', context)
 
@@ -51,7 +53,7 @@ class QuickDown(View):
         """Called when clicking the bolt to see if a download can be started immediately.
         :param query: the string to search
         """
-        query = _get_param_or_return_400(request.POST, 'query')
+        query = _get_param_or_return_400(request.POST, 'search_query')
         item = get_search_engine().quick_search(query)
         if item:
             # Quick download enabled: download without displaying results.
@@ -59,7 +61,7 @@ class QuickDown(View):
         else:
             # No match found with the quick download method.
             # Display search results instead.
-            return JsonResponse({'redirect': True, 'query': query})
+            return JsonResponse({'redirect': True, 'search_query': query})
 
 
 class Download(View):
@@ -113,7 +115,7 @@ class Search(View):
         :param page_number (optional): int The page number
         :param no_quick (optional): bool Whether the request is to do a quick download
         """
-        query = _get_param_or_return_400(request.GET, 'query')
+        query = _get_param_or_return_400(request.GET, 'search_query')
         page_number = request.GET.get('page_number', 0)
         no_quick = request.GET.get('no_quick', False)
         _settings = DownloadSettings.get_object()
@@ -121,11 +123,12 @@ class Search(View):
             'directory': get_download_directory(),
             'free_space': get_free_space_mb(),
             'path_form': PathForm(instance=_settings),
-            'query': query,
+            'search_query': query,
             'no_quick': no_quick,
             'contains': _settings.contains_list,
             'excludes': _settings.excludes_list,
-            'down_box': _settings.download_box_state
+            'down_box': _settings.download_box_state,
+            'version': __version__
         }
 
         try:

@@ -154,24 +154,32 @@ class DownloadManager:
         # Remove any previous cancel signal
         if client in self.cancel_server_connection_signals:
             del self.cancel_server_connection_signals
+        use_ssl = True
         while True:
             # Check if cancel was pressed
             if client in self.cancel_server_connection_signals:
                 break
             # Try connecting to the server
             try:
-                ssl_factory = Factory(wrapper=ssl.wrap_socket)
-                client.connect(irc_app_connection.download.server, 6697, nickname, connect_factory=ssl_factory)
+                if use_ssl:
+                    ssl_factory = Factory(wrapper=ssl.wrap_socket)
+                    client.connect(irc_app_connection.download.server, 6697, nickname, connect_factory=ssl_factory)
+                else:
+                    client.connect(irc_app_connection.download.server, 6667, nickname)
                 client.start()
                 # The server connection has now been established, we can stop the loop.
                 break
             except ServerConnectionError as e:
                 log(f'Server connection error ({i}): {str(e)}')
-                irc_app_connection.history.update(status=Status.SERVER_CONNECTION_ERROR, end_date=utcnow(),
-                                                  size=irc_app_connection.download.size)
-                irc_app_connection.download.update(status=Status.connecting_with_attempts(i))
-                i += 1
-                time.sleep(0.2)
+                if 'unsupported protocol' in str(e):
+                    # SSL not supported, switch to no SSL
+                    use_ssl = False
+                else:
+                    irc_app_connection.history.update(status=Status.SERVER_CONNECTION_ERROR, end_date=utcnow(),
+                                                      size=irc_app_connection.download.size)
+                    irc_app_connection.download.update(status=Status.connecting_with_attempts(i))
+                    i += 1
+                    time.sleep(0.2)
 
     def stop_all(self):
         """Disconnect all existing server connections."""

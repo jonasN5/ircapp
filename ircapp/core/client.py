@@ -15,7 +15,7 @@ if sys.platform == "win32":
 else:
     pass
 
-from version import __version__
+from ircapp.version import __version__
 from core.utils.logging import log
 import core.dispatcher as dispatcher  # Avoid circular import
 
@@ -93,6 +93,9 @@ class IRCAppClient(SimpleIRCClient):
     def join_channel_and_request_package(self, irc_app_connection: IRCAppConnection = None):
         if not irc_app_connection:
             irc_app_connection = self.initial_connection
+            # Join additional server channels on welcome
+            if self.server in self.ADDITIONAL_CHANNELS:
+                self._join_channel(self.ADDITIONAL_CHANNELS[self.server])
         else:
             irc_app_connection.download.save()
             # Add the new connection to the list

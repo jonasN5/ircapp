@@ -31,7 +31,7 @@
 	<span class="noselect ircapp-logo mdl-layout-title"><a href="/"><img src="{{STATIC_URL}}ic_ircapp_logo_white.svg"></a></span>
 	<form class="" action="{% url 'search' %}" method="GET" id="top-search">
 	  <div id="searchbox">
-	    <input id="searchBox" placeholder="Search" name="query" type="text" class="searchbox">
+	    <input id="searchBox" placeholder="Search" name="search_query" type="text" class="searchbox">
 	  </div>
 	</form>
 	<button id="download" title="Quick download" class="quick-download-button mdl-button mdl-js-button">
@@ -77,10 +77,10 @@
   <!-- </div> -->
   <div style="text-align:center;padding-top:60px" class="mdl-card__supporting-text">
     <img style="margin-right:8px;margin-bottom:8px" src="{{STATIC_URL}}ic_ircapp_logo_bluegray.svg" height="32px"><br>
-    v<strong>2.0.2</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" href="/log/">Log file</a><br><br>
+    v<strong>{{version}}</strong> &middot; <a style="text-decoration:underline;cursor:pointer;" target="_blank" href="/log/">Log file</a><br><br>
     <strong>Code by MrJ &middot; Art by Schickele</strong><br>
     Inspired by the search king’s dev site<br>
-    &copy; 2015–2016 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
+    &copy; 2015–2022 &middot; <a target="_blank" href="{{STATIC_URL}}ircapp_gua.txt">License (MIT)</a><br><br>
     <!-- <hr style="width:298px"> -->
     <a class="opacity-on-hover" target="_blank" href="https://www.python.org"><img height="18px" src="{{STATIC_URL}}ic_python_gray.svg"></a>&ensp;
     <a class="opacity-on-hover" target="_blank" href="https://www.djangoproject.com/"><img height="18px" src="{{STATIC_URL}}ic_django_gray.svg"></a>&ensp;
@@ -768,7 +768,7 @@ $( "#download" ).click(function(event) {
   $.ajax({
     url: "/quick_download/",
     type: "post",
-    data: { query : $( "#searchBox" ).val() },
+    data: { search_query : $( "#searchBox" ).val() },
     success: function( response ) {
       if ( response.fields ) {
 	    //download is not launched; item is added to the queue
@@ -795,7 +795,7 @@ $( "#download" ).click(function(event) {
 	    Recalibrate_table();
       } else {
 	    if ( response.redirect ) {
-	      window.location.replace("/search/?query=" + response.q + "&no_quick=True");
+	      window.location.replace("/search/?search_query=" + response.search_query + "&no_quick=True");
 	    }
       }
     }

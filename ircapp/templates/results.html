@@ -86,7 +86,7 @@
             $('[id^="firstpage"]').click(function() { window.location.replace(Pageurl("first")) });
 
             $(document).ready( function () {
-                $("#searchBox").val("{{q}}");
+                $("#searchBox").val("{{search_query}}");
                 var table = document.getElementById("query");
                 if ( table ) {
                     var tbody = table.getElementsByTagName("tbody")[0];

@@ -36,6 +36,12 @@ Windows only goodies: if `pip install miniupnp` fails, proceed as follows:
 
 https://github.com/themadmrj/ircapp/issues
 
+### Changelog 3.1.0:
+
+* Fix: the query now stays in the search box like it should
+* Fix: the addiotional channels configured in the client are now joined properly
+* Add: fallback to unsecure server connection if SSL is not supported
+
 ### Changelog 3.0.0:
 
 I basically completely rewrote the backend which was very poorly written since I was only starting to program.

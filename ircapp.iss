@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "IRCApp"
-#define MyAppVersion "3.0"
+#define MyAppVersion "3.1"
 #define MyAppPublisher "IRCApp"
 #define MyAppURL "https://github.com/themadmrj/ircapp"
 #define MyAppExeName "IRCApp.exe"
