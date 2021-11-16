@@ -8,7 +8,7 @@ data_files = [
      ['ircapp/core/static/ircapp_bolt.svg'])
 ]
 
-packages = ['django', 'irc', 'requests', rarfile, 'cherrypy', 'miniupnpc', 'easygui', 'names', 'dataclasses_json']
+packages = ['django', 'irc', 'requests', 'rarfile', 'cherrypy', 'miniupnpc', 'easygui', 'names', 'dataclasses_json']
 
 setup(
     name='IRCApp',
