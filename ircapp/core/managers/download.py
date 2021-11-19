@@ -205,11 +205,11 @@ class DownloadManager:
                 try:
                     dcc_connection.disconnect()
                 except KeyError:
-                    # DCC connection not yet established
-                    irc_app_connection.on_dcc_disconnect()
-                return
+                    pass  # DCC connection not yet established
             else:
-                self.check_queue(download=DownloadOngoing.objects.filter(server=server, bot=bot).first())
+                # DCC connection not yet established
+                irc_app_connection.on_dcc_disconnect()
+
         else:
             # In case there is no client or dcc_connection, simply delete any ongoing download with this info
             DownloadOngoing.objects.filter(server=server, bot=bot).delete()
@@ -226,7 +226,7 @@ class DownloadManager:
         download.delete()
         # Next we check if there is a queue for this server
         if DownloadQueue.objects.filter(server=download.server).exists():
-            # A Queue exists for this server, check if the channel is the same
+            # A Queue exists for this server, start the new download
             queue_obj = DownloadQueue.objects.filter(server=download.server).order_by("id").first()
             irc_app_connection = IRCAppConnection(
                 download=DownloadOngoing(server=queue_obj.server, channel=queue_obj.channel, bot=queue_obj.bot,
@@ -234,11 +234,10 @@ class DownloadManager:
                                          size=queue_obj.size),
                 history=DownloadHistory(filename=queue_obj.filename, size=queue_obj.size)
             )
-
-            client.join_channel_and_request_package(irc_app_connection=irc_app_connection)
-
             # Delete the DownloadQueue object since it's consumed
             queue_obj.delete()
+            # Request the queued package
+            client.join_channel_and_request_package(irc_app_connection=irc_app_connection)
             return
         else:
             # There is no queue -at all or for this server-;

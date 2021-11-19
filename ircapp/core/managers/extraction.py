@@ -3,9 +3,15 @@ import sys
 import tarfile
 import errno
 import shutil
+import struct
 
-if sys.platform == "win32":
-    os.environ['UNRAR_LIB_PATH'] = os.path.join(os.path.dirname(sys.executable), 'unrar.dll')
+from django.conf import settings
+
+if sys.platform == 'win32':
+    if struct.calcsize('P') * 8 == 64:
+        os.environ['UNRAR_LIB_PATH'] = os.path.join(settings.BASE_DIR, 'unrar64.dll')
+    else:
+        os.environ['UNRAR_LIB_PATH'] = os.path.join(settings.BASE_DIR, 'unrar.dll')
     from unrar import rarfile
 else:
     import rarfile

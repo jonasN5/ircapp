@@ -23,6 +23,7 @@ class IRCAppConnection:
     file: Optional[IO[Any]] = None  # The actual file
     ack_queue = []  # Bytes received acknowledgement queue
     ack_lock = threading.Lock()  # Lock for `ack_queue`
+    request_package_thread: Optional[threading.Timer]  # The daemon thread used to requet the package after a delay
 
     def __init__(self, download: DownloadOngoing, history: DownloadHistory):
         self.download = download
@@ -47,6 +48,11 @@ class IRCAppConnection:
     def save_objects(self):
         self.download.save()
         self.history.save()
+
+    def cancel_request_package(self):
+        """If the package has not yet been requested (initial delay not over), cancel it."""
+        if self.request_package_thread:
+            self.request_package_thread.cancel()
 
     def on_dccmsg(self, event: Event):
         """
@@ -112,6 +118,7 @@ class IRCAppConnection:
             self.history.update(status=Status.FILE_TRANSFER_ERROR, end_date=utcnow())
             log(f'Error during file transfer. Completed percentage: {int(self.download.percentage * 100)}')
         else:
+            self.cancel_request_package()
             # Check the queue when the download is canceled
             self.check_queue()
 

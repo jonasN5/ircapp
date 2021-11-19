@@ -64,7 +64,6 @@ class SearchEngine(ABC):
         """Returns the first search result that matches the configured parameters and the query string."""
         page_number = 0
         while True:
-            print(page_number)
             response = self.search(query, page_number=page_number)
             page_number += 1
 
@@ -73,7 +72,6 @@ class SearchEngine(ABC):
             else:
                 _settings = DownloadSettings.get_object()
                 quality_words = [i[0] for i in DownloadSettings.priority_choices]
-                print(_settings.priority)
                 quality_index = quality_words.index(_settings.priority)
                 if quality_index > 0:
                     quality_words = quality_words[quality_index:]

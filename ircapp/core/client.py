@@ -6,19 +6,12 @@ import threading
 import names
 from dataclasses import dataclass, field
 from typing import Dict, Optional
-
 from irc.client import (ServerConnection, DCCConnection, SimpleIRCClient, ip_numstr_to_quad, ip_quad_to_numstr,
                         DCCConnectionError)
 
-if sys.platform == "win32":
-    os.environ['UNRAR_LIB_PATH'] = os.path.join(os.path.dirname(sys.executable), 'unrar.dll')
-else:
-    pass
-
-from ircapp.version import __version__
+from version import __version__
 from core.utils.logging import log
 import core.dispatcher as dispatcher  # Avoid circular import
-
 from core.ircapp_connection import IRCAppConnection
 from core.models import *
 
@@ -56,12 +49,6 @@ class IRCAppClient(SimpleIRCClient):
     Call irc_app_client.connect() and then irc_app_client.start() to launch the server connection.
     """
 
-    # Store all DCC connections for this client (server connection)
-    connections_cls: IRCAppConnections = IRCAppConnections()
-
-    # True if the client should should down without further processing
-    shutdown = False
-
     """Delay before requesting a package after joining a server."""
     DELAYS_IN_S = {
         'irc.scenep2p.net': 60
@@ -72,14 +59,17 @@ class IRCAppClient(SimpleIRCClient):
         'irc.abjects.net': '#MG-CHAT'
     }
 
-    # The list of channels that are currently joined.
-    joined_channels: [str] = []
-
-    # True if the delay after the server connection has been established is over.
-    initial_join_delay_over = False
-
     def __init__(self, connection: IRCAppConnection):
         super().__init__()
+        # Store all DCC connections for this client (server connection)
+        self.connections_cls: IRCAppConnections = IRCAppConnections()
+        # True if the client should should down without further processing
+        self.shutdown = False
+        # The list of channels that are currently joined.
+        self.joined_channels: [str] = []
+        # True if the delay after the server connection has been established is over.
+        self.initial_join_delay_over = False
+
         # When creating a new object, also add the first connection
         self.connections_cls.add_connection(connection)
         # Keep track of the initial connection for convenience
@@ -108,12 +98,12 @@ class IRCAppClient(SimpleIRCClient):
         if not self.initial_join_delay_over:
             delay = self.DELAYS_IN_S.get(self.connection.server, random.randint(2, 5))
             log(f'Waiting {delay} seconds before requesting the package...')
-        thread = threading.Timer(delay, self._request_package, args=(self.initial_connection,))
-        # Make the thread a daemon to make it stop when the ircapp shuts down
-        thread.daemon = True
-        thread.start()
-
         irc_app_connection.download.update(status=Status.waiting_for_seconds(delay))
+        irc_app_connection.request_package_thread = threading.Timer(delay, self._request_package,
+                                                                    args=(irc_app_connection,))
+        # Make the thread a daemon to make it stop when the ircapp shuts down
+        irc_app_connection.request_package_thread.daemon = True
+        irc_app_connection.request_package_thread.start()
 
     def _join_channel(self, channel: str):
         """Join a channel if not already done."""
@@ -140,6 +130,9 @@ class IRCAppClient(SimpleIRCClient):
     def cancel_download(self, irc_app_connection: IRCAppConnection):
         """Signal the bot to cancel the download."""
         self.connection.ctcp('DCC', irc_app_connection.download.bot, 'CANCEL')
+        # If the package has not yet been requested (initial delay not over), cancel it
+        if irc_app_connection.request_package_thread:
+            irc_app_connection.request_package_thread.cancel()
 
     def on_welcome(self, c, e):
         """Called when the client successfully connected to a server. The channel should now be joined."""

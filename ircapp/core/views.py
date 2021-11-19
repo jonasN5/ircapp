@@ -19,7 +19,7 @@ from core.models import *
 from core.utils.directory import get_download_directory, get_free_space_mb
 from core.utils.logging import get_log_path, log
 from core.dispatcher import Dispatcher
-from ircapp.version import __version__
+from version import __version__
 
 
 def _get_param_or_return_400(kwargs: dict, key: str):

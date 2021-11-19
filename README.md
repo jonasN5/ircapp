@@ -39,8 +39,10 @@ https://github.com/themadmrj/ircapp/issues
 ### Changelog 3.1.0:
 
 * Fix: the query now stays in the search box like it should
-* Fix: the addiotional channels configured in the client are now joined properly
+* Fix: the additional channels configured in the client are now joined properly
 * Add: fallback to unsecure server connection if SSL is not supported
+* Fix: the consumed queue item is now immediately removed from the download box (UI)
+* Fix: the queued item is now properly processed
 
 ### Changelog 3.0.0:
 

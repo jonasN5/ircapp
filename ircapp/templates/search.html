@@ -836,35 +836,35 @@ function Getqueue() {
     type: "get",
 
     success: function( data ) {
+      $("#queue table tbody").remove();
       if ( data.length > 0 ) {
-    $("#queue table tbody").remove(); 
-    queue_count = data.length; 
-	var items = [];
-	for (i = 0; i < data.length; i++){
-	  var filename = data[i].filename,
-	    size_str = data[i].size_str,
-	    size = data[i].size,
-	    network = data[i].server,
-	    bolt_pic = "";
-	  if ( network.indexOf("criten") >= 0 ) {
-	    bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
-	  }
-	  items.push(
-	      "<tr id='" + data[i].id + "' name='" + filename + "'>" +
-	      "<td>" + filename + bolt_pic +"</td>" +
-	      "<td>" + size_str + "</td>" +
-	      "<td>Queued</td>" +
-	      "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
-	      "</tr>"
-	      );
+        queue_count = data.length;
+        var items = [];
+        for (i = 0; i < data.length; i++){
+          var filename = data[i].filename,
+            size_str = data[i].size_str,
+            size = data[i].size,
+            network = data[i].server,
+            bolt_pic = "";
+          if ( network.indexOf("criten") >= 0 ) {
+            bolt_pic = "<img src='{{STATIC_URL}}ircapp_bolt.svg'>"
+          }
+          items.push(
+              "<tr id='" + data[i].id + "' name='" + filename + "'>" +
+              "<td>" + filename + bolt_pic +"</td>" +
+              "<td>" + size_str + "</td>" +
+              "<td>Queued</td>" +
+              "<td><img id='delete_pic' class='queue' src='{{STATIC_URL}}ic_delete_lightgray.svg'></td>" +
+              "</tr>"
+              );
 
-	}
-	$("#queue table").append(items);
-    $("#queue table tr td:first-child").each( function(){
-        Add_tooltip( $(this), $(this).html(), true );
-    }); 
-	$('.tooltip').tooltipster();	
-	Recalibrate_table();
+	    }
+        $("#queue table").append(items);
+        $("#queue table tr td:first-child").each( function(){
+            Add_tooltip( $(this), $(this).html(), true );
+        });
+        $('.tooltip').tooltipster();
+        Recalibrate_table();
       }
     },
     error: function( jqXHR, textStatus ) {
