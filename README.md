@@ -36,8 +36,8 @@ Windows only goodies: if `pip install miniupnp` fails, proceed as follows:
 
 By default, IRCApp will attempt to manage ports using UPnP. In some cases this might not work. You should then open your port range manually on your internet box and indicate that port range in the `config.ini` file. Syntax:
 * `port_forwarding = 30000` # Single port
-* `port_forwarding = 30000-30010` # Port range, including start and end port
-Keep in mind that if you open a single port, downloading multiple files simultaneously will fail if both servers require reverse DCC. It is recommended to open a port range instead.
+* `port_forwarding = 30000-30010` # Port range, including start and end port  
+Keep in mind that if you open a single port, downloading multiple files simultaneously will fail if both peers require reverse DCC. It is recommended to open a port range instead.
 
 ## Contact
 
