@@ -14,7 +14,7 @@ HOST = '127.0.0.1'  # Address used to access IRCApp in the browser, changeable i
 PORT = 8020  # Port used to access IRCApp in the browser, changeable in config.ini
 TIME_ZONE = 'Europe/Paris'  # Timezone used by IRCApp, changeable in config.ini
 DOWNLOAD_DIR = None  # Download directory used by IRCApp, changeable in config.ini
-PORT_FORWARDING = None  # Timezone used in IRCApp, changeable in config.ini
+PORT_FORWARDING = None  # Ports opened manually used instead of UPnP
 
 # Needs to be declared explicitly for CherryPy
 ROOT_URLCONF = 'urls'

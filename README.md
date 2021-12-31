@@ -32,9 +32,20 @@ Windows only goodies: if `pip install miniupnp` fails, proceed as follows:
 * Run `pip install {{thewheel}}`
 * Then copy the `miniupnpc.dll` file into the python \Scripts directory (where the python exe resides)
 
+## Port management
+
+By default, IRCApp will attempt to manage ports using UPnP. In some cases this might not work. You should then open your port range manually on your internet box and indicate that port range in the `config.ini` file. Syntax:
+* `port_forwarding = 30000` # Single port
+* `port_forwarding = 30000-30010` # Port range, including start and end port
+Keep in mind that if you open a single port, downloading multiple files simultaneously will fail if both servers require reverse DCC. It is recommended to open a port range instead.
+
 ## Contact
 
 https://github.com/themadmrj/ircapp/issues
+
+### Changelog 3.1.1:
+
+* Added manual port management instead of UPnP
 
 ### Changelog 3.1.0:
 

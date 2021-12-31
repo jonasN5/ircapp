@@ -3,7 +3,7 @@ import cherrypy
 
 from core.managers.download import DownloadManager
 from core.managers.extraction import FileExtractor
-from core.managers.upnp import UpnpManager
+from core.managers.upnp import PortManager
 from core.models import *
 
 
@@ -15,7 +15,7 @@ class Dispatcher:
         """Implement the class as a singleton.."""
         if cls._instance is None:
             cls._instance = super(Dispatcher, cls).__new__(cls)
-            cls._upnp_manager = UpnpManager()
+            cls._upnp_manager = PortManager()
             cls._download_manager = DownloadManager()
             cls._file_extractor = FileExtractor()
         return cls._instance

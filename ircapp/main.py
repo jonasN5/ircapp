@@ -122,19 +122,24 @@ class IRCApp:
     @staticmethod
     def _load_config_file():
         """Load the user preferences from the config.ini file."""
-        try:
-            with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:
-                content = cfg.readlines()
-                settings.HOST = content[0][1 + content[0].index("="):content[0].index("#")].strip(" ")
-                settings.PORT = int(content[1][1 + content[1].index("="):content[1].index("#")].strip(" "))
-                settings.TIME_ZONE = content[3][1 + content[3].index("="):content[3].index("#")].strip(" ")
-                settings.DOWNLOAD_DIR = content[4][1 + content[4].index("="):content[4].index("#")].strip(" ")
-                settings.PORT_FORWARDING = content[2][1 + content[2].index("="):content[2].index("#")].strip(" ")
-                # If the HOST changed, we have to add it ALLOWED_HOSTS
-                if settings.HOST not in settings.ALLOWED_HOSTS:
-                    settings.ALLOWED_HOSTS.append(settings.HOST)
-        except FileNotFoundError:
-            pass
+        with open(os.path.join(settings.BASE_DIR, "config.ini"), "r") as cfg:
+            content = cfg.readlines()
+            settings.HOST = content[0][1 + content[0].index("="):content[0].index("#")].strip(" ")
+            settings.PORT = int(content[1][1 + content[1].index("="):content[1].index("#")].strip(" "))
+            settings.TIME_ZONE = content[3][1 + content[3].index("="):content[3].index("#")].strip(" ")
+            settings.DOWNLOAD_DIR = content[4][1 + content[4].index("="):content[4].index("#")].strip(" ")
+            settings.PORT_FORWARDING = content[2][1 + content[2].index("="):content[2].index("#")].strip(" ")
+            if settings.PORT_FORWARDING:
+                # Check if a single port was given or a port range
+                try:
+                    settings.PORT_FORWARDING = int(settings.PORT_FORWARDING)
+                except ValueError:
+                    # Port range
+                    ports = settings.PORT_FORWARDING.split('-')
+                    settings.PORT_FORWARDING = (int(ports[0]), int(ports[1]))
+            # If the HOST changed, we have to add it ALLOWED_HOSTS
+            if settings.HOST not in settings.ALLOWED_HOSTS:
+                settings.ALLOWED_HOSTS.append(settings.HOST)
 
     @staticmethod
     def open_browser():
